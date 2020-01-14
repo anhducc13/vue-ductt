@@ -1,17 +1,32 @@
 import Cookies from "js-cookie";
 
 const state = {
-  sidebar: {
-    opened: Cookies.get("sidebarStatus")
-      ? !!+Cookies.get("sidebarStatus")
-      : true,
-    withoutAnimation: false
-  },
-  device: "desktop",
-  size: Cookies.get("size") || "medium"
+  isMobile: false,
+  theme: "dark",
+  layout: "side",
+  systemName: "Vue Antd Admin",
+  copyright: "2019-2020",
+  footerLinks: [
+    { link: "https://www.facebook.com/ductt.97", name: "Duc Tran" },
+    { link: "https://github.com/anhducc13", icon: "github" },
+    { link: "https://ant.design", name: "Ant Design" }
+  ],
+  multipage: true
 };
 
 const mutations = {
+  SET_DEVICE: (state, isMobile) => {
+      state.isMobile = isMobile
+  },
+  SET_THEME: (state, theme) => {
+    state.theme = theme
+  },
+  SET_LAYOUT: (state, layout) => {
+    state.layout = layout
+  },
+  SET_MULTIPAGE: (state, multipage) => {
+    state.multipage = multipage
+  },
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened;
     state.sidebar.withoutAnimation = false;
@@ -36,18 +51,18 @@ const mutations = {
 };
 
 const actions = {
-  toggleSideBar({ commit }) {
-    commit("TOGGLE_SIDEBAR");
+  setDevice({ commit }, isMobile) {
+    commit("SET_DEVICE", isMobile);
   },
-  closeSideBar({ commit }, { withoutAnimation }) {
-    commit("CLOSE_SIDEBAR", withoutAnimation);
+  setTheme({ commit }, theme) {
+    commit("SET_THEME", theme);
   },
-  toggleDevice({ commit }, device) {
-    commit("TOGGLE_DEVICE", device);
+  setLayout({ commit }, layout) {
+    commit("SET_LAYOUT", layout);
   },
-  setSize({ commit }, size) {
-    commit("SET_SIZE", size);
-  }
+  setMultiPage({ commit }, multipage) {
+    commit("SET_MULTIPAGE", multipage);
+  },
 };
 
 export default {

@@ -1,6 +1,6 @@
 <template>
   <div class="section">
-    <h1 class="title">Admin Home</h1>
+    <h1 class="title">Admin dfdsf Home</h1>
   </div>
 </template>
 

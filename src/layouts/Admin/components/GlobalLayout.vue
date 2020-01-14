@@ -1,36 +1,37 @@
 <template>
-  <a-layout class="layout-container">
+  <a-layout>
     <drawer v-if="isMobile" :openDrawer="collapsed" @change="onDrawerChange">
       <sider-menu :theme="theme" :menuData="menuData" :collapsed="false" :collapsible="false" @menuSelect="onMenuSelect"/>
     </drawer>
-    <sider-menu :theme="theme" v-else-if="layout === 'side'" :menuData="menuData" :collapsed="collapsed" :collapsible="true" />
+    <!-- <sider-menu :theme="theme" v-else-if="layout === 'side'" :menuData="menuData" :collapsed="collapsed" :collapsible="true" /> -->
+    <!-- <drawer :open-drawer="showSetting" placement="right"  @change="onSettingDrawerChange">
+      <div class="setting" slot="handler">
+        <a-icon :type="showSetting ? 'close' : 'setting'" />
+      </div>
+      <setting />
+    </drawer> -->
     <a-layout>
       <global-header :menuData="menuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse"/>
       <a-layout-content :style="{minHeight: minHeight, margin: '24px 24px 0'}">
         <slot></slot>
       </a-layout-content>
-      <a-layout-footer style="padding: 0px">
-        <global-footer :link-list="footerLinks" :copyright="copyright" />
-      </a-layout-footer>
     </a-layout>
   </a-layout>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import GlobalHeader from './Admin/components/GlobalHeader'
+import GlobalHeader from './GlobalHeader'
 import Drawer from '@/components/shared/tool/Drawer'
 import SiderMenu from '@/components/shared/menu/SiderMenu'
-import GlobalFooter from './Admin/components/GlobalFooter'
-import { nav } from '@/_nav'
 
 const minHeight = window.innerHeight - 64 - 24 - 122
 
 let menuData = []
 
 export default {
-  name: 'AdminLayout',
-  components: {SiderMenu, Drawer, GlobalHeader, GlobalFooter},
+  name: 'GlobalLayout',
+  components: { SiderMenu, Drawer, GlobalHeader},
   data () {
     return {
       minHeight: minHeight + 'px',
@@ -44,7 +45,7 @@ export default {
       'isMobile',
       'theme',
       'layout',
-      'footerLinks',
+      'linkList',
       'copyright',
     ]),
   },
@@ -58,17 +59,17 @@ export default {
     onMenuSelect () {
       this.toggleCollapse()
     },
+    onSettingDrawerChange (val) {
+      this.showSetting = val
+    }
   },
   beforeCreate () {
-    menuData = nav
+    menuData = this.$router.options.routes.find((item) => item.path === '/').children
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .layout-container {
-    height: 100vh;
-  }
   .setting{
     background-color: #1890ff;
     color: #fff;

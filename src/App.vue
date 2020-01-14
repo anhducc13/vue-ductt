@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import enquireScreen from './utils/device'
 const defaultLayout = "default";
 export default {
   computed: {
@@ -14,9 +15,11 @@ export default {
       return (this.$route.meta.layout || defaultLayout) + "-layout";
     }
   },
+  created () {
+    let _this = this
+    enquireScreen(isMobile => {
+      _this.$store.dispatch('app/setDevice', isMobile)
+    })
+  }
 };
 </script>
-
-<style>
-
-</style>
