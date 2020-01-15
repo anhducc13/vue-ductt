@@ -54,5 +54,15 @@ export const nav = [
         icon: "plus"
       }
     ]
+  },
+  {
+    name: "Quản lý tác giả",
+    icon: "solution",
+    path: "/admin/authors"
+  },
+  {
+    name: "Quản lý NXB",
+    icon: "printer",
+    path: "/admin/publishers"
   }
 ];

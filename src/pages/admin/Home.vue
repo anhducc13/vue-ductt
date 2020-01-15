@@ -1,17 +1,14 @@
 <template>
-  <div class="section">
-    <h1 class="title">Admin dfdsf Home</h1>
-  </div>
+  <a-card>
+    <h2>Trang chủ</h2>
+  </a-card>
 </template>
 
 <script>
 export default {
   data() {
-    return {
-    };
+    return {};
   },
-  created() {
-    
-  }
+  created() {}
 };
 </script>

@@ -5,7 +5,14 @@
         <div class="d-flex justify-content-between" slot="title">
           <h4 v-if="isEditCategory">Chỉnh sửa danh mục</h4>
           <h4 v-else>Thêm mới danh mục</h4>
-          <a-button type="primary" @click="() => { $router.push({path: '/admin/categories/list'})}">
+          <a-button
+            type="primary"
+            @click="
+              () => {
+                $router.push({ path: '/admin/categories/list' });
+              }
+            "
+          >
             <a-icon type="left" />Về danh sách
           </a-button>
         </div>
@@ -14,14 +21,18 @@
             <a-form
               @submit.prevent="handleSubmit(saveCategory)"
               :labelCol="{ lg: { span: 6 }, md: { span: 24 } }"
-              :wrapperCol="{ lg: { span: 18 }, md: { span: 24 }}"
+              :wrapperCol="{ lg: { span: 18 }, md: { span: 24 } }"
             >
               <validation-provider
                 name="Tên ngắn gọn"
                 rules="required|minLength:8"
                 v-slot="{ errors }"
               >
-                <a-form-item required :help="errors[0]" :validate-status="errors[0] ? 'error': ''">
+                <a-form-item
+                  required
+                  :help="errors[0]"
+                  :validate-status="errors[0] ? 'error' : ''"
+                >
                   <span slot="label">
                     Tên ngắn gọn&nbsp;
                     <a-tooltip title="Tên hiển thị trên menu danh mục">
@@ -40,7 +51,11 @@
                 rules="required|minLength:8"
                 v-slot="{ errors }"
               >
-                <a-form-item required :help="errors[0]" :validate-status="errors[0] ? 'error': ''">
+                <a-form-item
+                  required
+                  :help="errors[0]"
+                  :validate-status="errors[0] ? 'error' : ''"
+                >
                   <span slot="label">
                     Tên đầy đủ&nbsp;
                     <a-tooltip title="Tên đầy đủ của danh mục">
@@ -54,7 +69,7 @@
                 <a-switch v-model="formData.is_active" />
               </a-form-item>
               <a-form-item label="Mô tả danh mục">
-                <tinymce v-bind:value="formData.description" />
+                <markdown-editor v-bind:value="formData.description" />
               </a-form-item>
               <a-form-item>
                 <span slot="label">
@@ -73,11 +88,17 @@
                   v-model="formData.parent_id"
                   :filterOption="filterOption"
                 >
-                  <a-select-option v-for="c in categories" :key="c.id">{{c.name}}</a-select-option>
+                  <a-select-option v-for="c in categories" :key="c.id">{{
+                    c.name
+                  }}</a-select-option>
                 </a-select>
               </a-form-item>
-              <a-form-item :wrapperCol="{ lg: { offset: 6, span: 18 }, md: { span: 24 }}">
-                <a-button :loading="loading" htmlType="submit" type="primary">Lưu danh mục</a-button>
+              <a-form-item
+                :wrapperCol="{ lg: { offset: 6, span: 18 }, md: { span: 24 } }"
+              >
+                <a-button :loading="loading" htmlType="submit" type="primary"
+                  >Lưu danh mục</a-button
+                >
               </a-form-item>
             </a-form>
           </validation-observer>
@@ -87,7 +108,7 @@
   </a-row>
 </template>
 <script>
-import Tinymce from "@/components/shared/Tinymce";
+import MarkdownEditor from "@/components/shared/MarkdownEditor";
 import { mapGetters } from "vuex";
 
 const defaultFormdata = {
@@ -99,7 +120,7 @@ const defaultFormdata = {
 };
 export default {
   name: "CategoryNew",
-  components: { Tinymce },
+  components: { MarkdownEditor },
   data() {
     return {
       formData: defaultFormdata,
@@ -145,5 +166,4 @@ export default {
   }
 };
 </script>
-<style scoped>
-</style>
+<style scoped></style>
