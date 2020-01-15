@@ -1,11 +1,23 @@
 <template>
   <a-layout class="layout-container">
     <drawer v-if="isMobile" :openDrawer="collapsed" @change="onDrawerChange">
-      <sider-menu :theme="theme" :menuData="menuData" :collapsed="false" :collapsible="false" @menuSelect="onMenuSelect"/>
+      <sider-menu
+        :theme="theme"
+        :menuData="menuData"
+        :collapsed="false"
+        :collapsible="false"
+        @menuSelect="onMenuSelect"
+      />
     </drawer>
-    <sider-menu :theme="theme" v-else-if="layout === 'side'" :menuData="menuData" :collapsed="collapsed" :collapsible="true" />
+    <sider-menu
+      :theme="theme"
+      v-else-if="layout === 'side'"
+      :menuData="menuData"
+      :collapsed="collapsed"
+      :collapsible="true"
+    />
     <a-layout>
-      <global-header :menuData="menuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse"/>
+      <global-header :menuData="menuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse" />
       <a-layout-content :style="{minHeight: minHeight, margin: '24px 24px 0'}">
         <slot></slot>
       </a-layout-content>
@@ -17,66 +29,60 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import GlobalHeader from './Admin/components/GlobalHeader'
-import Drawer from '@/components/shared/tool/Drawer'
-import SiderMenu from '@/components/shared/menu/SiderMenu'
-import GlobalFooter from './Admin/components/GlobalFooter'
-import { nav } from '@/_nav'
+import { mapGetters } from "vuex";
+import GlobalHeader from "./Admin/components/GlobalHeader";
+import Drawer from "@/components/shared/tool/Drawer";
+import SiderMenu from "@/components/shared/menu/SiderMenu";
+import GlobalFooter from "./Admin/components/GlobalFooter";
+import { nav } from "@/_nav";
 
-const minHeight = window.innerHeight - 64 - 24 - 122
+const minHeight = window.innerHeight - 64 - 24 - 122;
 
-let menuData = []
+let menuData = [];
 
 export default {
-  name: 'AdminLayout',
-  components: {SiderMenu, Drawer, GlobalHeader, GlobalFooter},
-  data () {
+  name: "AdminLayout",
+  components: { SiderMenu, Drawer, GlobalHeader, GlobalFooter },
+  data() {
     return {
-      minHeight: minHeight + 'px',
+      minHeight: minHeight + "px",
       collapsed: false,
       menuData: menuData,
       showSetting: false
-    }
+    };
   },
   computed: {
-    ...mapGetters([
-      'isMobile',
-      'theme',
-      'layout',
-      'footerLinks',
-      'copyright',
-    ]),
+    ...mapGetters(["isMobile", "theme", "layout", "footerLinks", "copyright"])
   },
   methods: {
-    toggleCollapse () {
-      this.collapsed = !this.collapsed
+    toggleCollapse() {
+      this.collapsed = !this.collapsed;
     },
-    onDrawerChange (show) {
-      this.collapsed = show
+    onDrawerChange(show) {
+      this.collapsed = show;
     },
-    onMenuSelect () {
-      this.toggleCollapse()
-    },
+    onMenuSelect() {
+      this.toggleCollapse();
+    }
   },
-  beforeCreate () {
-    menuData = nav
+  beforeCreate() {
+    menuData = nav;
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
-  .layout-container {
-    height: 100vh;
-  }
-  .setting{
-    background-color: #1890ff;
-    color: #fff;
-    border-radius: 5px 0 0 5px;
-    line-height: 40px;
-    font-size: 22px;
-    width: 40px;
-    height: 40px;
-    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
-  }
+.layout-container {
+  height: 100vh;
+}
+.setting {
+  background-color: #1890ff;
+  color: #fff;
+  border-radius: 5px 0 0 5px;
+  line-height: 40px;
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+}
 </style>

@@ -27,7 +27,17 @@ const router = new Router({
       component: () => import("@/components/shared/Tinymce/index")
     },
     {
+      path: "/admin/categories/list",
+      meta: { layout: "admin" },
+      component: () => import("@/pages/admin/categories/CategoriesList")
+    },
+    {
       path: "/admin/categories/new",
+      meta: { layout: "admin" },
+      component: () => import("@/pages/admin/categories/CategoryNew")
+    },
+    {
+      path: "/admin/categories/:id/edit",
       meta: { layout: "admin" },
       component: () => import("@/pages/admin/categories/CategoryNew")
     },
