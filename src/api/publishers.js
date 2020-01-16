@@ -9,14 +9,35 @@ export function fetchPublishersList() {
           {
             id: 1,
             name: "NXB Văn Học",
+            rate: 3,
             display_url: "nxb-van-hoc"
           },
           {
             id: 2,
             name: "NXB Giáo Dục",
+            rate: 4,
             display_url: "nxb-giao-duc"
           }
         ]
+      }
+    });
+  });
+  // return request({
+  //   url: "/user/login",
+  //   method: "post",
+  //   data
+  // });
+}
+export function fetchPublisher(id) {
+  console.log(id);
+  return new Promise(res => {
+    res({
+      result: {
+        id: 2,
+        name: "NXB Giáo Dục",
+        display_url: "nxb-giao-duc",
+        rate: 5,
+        description: ""
       }
     });
   });

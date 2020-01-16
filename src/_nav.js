@@ -27,12 +27,12 @@ export const nav = [
     path: "/admin/books",
     children: [
       {
-        path: "/admin/books/all",
+        path: "/admin/books/list",
         name: "Danh sách sách",
         icon: "ordered-list"
       },
       {
-        path: "/admin/books/add",
+        path: "/admin/books/new",
         name: "Thêm mới sách",
         icon: "plus"
       }

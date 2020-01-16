@@ -39,52 +39,38 @@
           <a-button size="small" type="link">Xóa</a-button>
         </span>
       </a-table>
-        <a-modal
-          v-model="visible"
-          @cancel="visible = false"
-          :footer="null"
-        >
-
-          <span v-if="isEditAuthor" slot="title">Chỉnh sửa (nhóm) tác giả</span>
-          <span v-else slot="title">Thêm (nhóm) tác giả</span>
-            <validation-observer ref="form" v-slot="{ handleSubmit }">
-              <a-form
-                @submit.prevent="handleSubmit(handleCreate)"
+      <a-modal v-model="visible" @cancel="visible = false" :footer="null">
+        <span v-if="isEditAuthor" slot="title">Chỉnh sửa (nhóm) tác giả</span>
+        <span v-else slot="title">Thêm (nhóm) tác giả</span>
+        <validation-observer ref="form" v-slot="{ handleSubmit }">
+          <a-form @submit.prevent="handleSubmit(handleCreate)">
+            <validation-provider
+              name="Tên tác giả"
+              rules="required|minLength:8"
+              v-slot="{ errors }"
+            >
+              <a-form-item
+                label="Tên tác giả"
+                required
+                :help="errors[0]"
+                :validate-status="errors[0] ? 'error' : ''"
               >
-              <validation-provider
-                name="Tên tác giả"
-                rules="required|minLength:8"
-                v-slot="{ errors }"
-              >
-                <a-form-item
-                  label="Tên tác giả"
-                  required
-                  :help="errors[0]"
-                  :validate-status="errors[0] ? 'error' : ''"
-                >
-                  <a-input
-                    :maxLength="255"
-                    placeholder="Nhập tên"
-                    v-model="author.name"
-                  />
-                </a-form-item>
-              </validation-provider>
-              <a-form-item label="Xếp hạng">
-                <a-rate v-model="author.rate" />
+                <a-input :maxLength="255" placeholder="Nhập tên" v-model="author.name" />
               </a-form-item>
-              <a-form-item label="Mô tả">
-                <markdown-editor v-bind:value="author.description" />
-              </a-form-item>
-              <div class="d-flex justify-content-end">
-                <a-button class="mr-2" @click.prevent="visible=false">Cancel</a-button>
-                <a-button htmlType="submit" type="primary">Lưu</a-button
-              >
-              </div>
-              
-              </a-form>
-      </validation-observer>
-        </a-modal>
-            
+            </validation-provider>
+            <a-form-item label="Xếp hạng">
+              <a-rate v-model="author.rate" />
+            </a-form-item>
+            <a-form-item label="Mô tả">
+              <markdown-editor v-bind:value="author.description" />
+            </a-form-item>
+            <div class="d-flex justify-content-end">
+              <a-button class="mr-2" @click.prevent="visible=false">Cancel</a-button>
+              <a-button htmlType="submit" type="primary">Lưu</a-button>
+            </div>
+          </a-form>
+        </validation-observer>
+      </a-modal>
     </a-card>
   </a-spin>
 </template>
@@ -111,7 +97,7 @@ const columns = [
     title: "Xếp hạng",
     key: "rate",
     dataIndex: "rate",
-    scopedSlots: { customRender: "rate" },
+    scopedSlots: { customRender: "rate" }
   },
   {
     title: "Thao tác",
@@ -144,7 +130,7 @@ export default {
       author: defaultFormdata,
       columns,
       visible: false,
-      loading: false,
+      loading: false
     };
   },
   mounted() {
@@ -154,7 +140,9 @@ export default {
         const { result } = res;
         this.listAuthors = result;
       })
-      .finally(() => { this.loading = false});
+      .finally(() => {
+        this.loading = false;
+      });
   },
   computed: {
     isEditAuthor() {
@@ -190,16 +178,18 @@ export default {
           this.author = result;
           this.visible = true;
         })
-        .finally(() => { this.loading = false});
+        .finally(() => {
+          this.loading = false;
+        });
     },
     handleCreate() {
-      console.log(this.author)
-    },
+      console.log(this.author);
+    }
   },
   watch: {
     visible() {
-      if(!this.visible) {
-        this.$refs.form.reset()
+      if (!this.visible) {
+        this.$refs.form.reset();
         this.author = defaultFormdata;
       }
     }

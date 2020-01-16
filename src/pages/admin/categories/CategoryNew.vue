@@ -18,19 +18,13 @@
         </div>
         <div>
           <validation-observer v-slot="{ handleSubmit }">
-            <a-form
-              @submit.prevent="handleSubmit(saveCategory)"
-            >
+            <a-form @submit.prevent="handleSubmit(saveCategory)">
               <validation-provider
                 name="Tên ngắn gọn"
                 rules="required|minLength:8"
                 v-slot="{ errors }"
               >
-                <a-form-item
-                  required
-                  :help="errors[0]"
-                  :validate-status="errors[0] ? 'error' : ''"
-                >
+                <a-form-item required :help="errors[0]" :validate-status="errors[0] ? 'error' : ''">
                   <span slot="label">
                     Tên ngắn gọn&nbsp;
                     <a-tooltip title="Tên hiển thị trên menu danh mục">
@@ -49,11 +43,7 @@
                 rules="required|minLength:8"
                 v-slot="{ errors }"
               >
-                <a-form-item
-                  required
-                  :help="errors[0]"
-                  :validate-status="errors[0] ? 'error' : ''"
-                >
+                <a-form-item required :help="errors[0]" :validate-status="errors[0] ? 'error' : ''">
                   <span slot="label">
                     Tên đầy đủ&nbsp;
                     <a-tooltip title="Tên đầy đủ của danh mục">
@@ -86,16 +76,15 @@
                   v-model="formData.parent_id"
                   :filterOption="filterOption"
                 >
-                  <a-select-option v-for="c in categories" :key="c.id">{{
+                  <a-select-option v-for="c in categories" :key="c.id">
+                    {{
                     c.name
-                  }}</a-select-option>
+                    }}
+                  </a-select-option>
                 </a-select>
               </a-form-item>
-              <a-form-item
-              >
-                <a-button :loading="loading" htmlType="submit" type="primary"
-                  >Lưu danh mục</a-button
-                >
+              <a-form-item>
+                <a-button :loading="loading" htmlType="submit" type="primary">Lưu danh mục</a-button>
               </a-form-item>
             </a-form>
           </validation-observer>

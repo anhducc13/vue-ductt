@@ -52,6 +52,11 @@ const router = new Router({
       component: () => import("@/pages/admin/publishers/PublishersList")
     },
     {
+      path: "/admin/books/new",
+      meta: { layout: "admin" },
+      component: () => import("@/pages/admin/books/BookNew")
+    },
+    {
       path: "/admin/login",
       component: () => import("@/pages/admin/Login")
     },
