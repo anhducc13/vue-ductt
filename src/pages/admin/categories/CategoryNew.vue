@@ -20,8 +20,6 @@
           <validation-observer v-slot="{ handleSubmit }">
             <a-form
               @submit.prevent="handleSubmit(saveCategory)"
-              :labelCol="{ lg: { span: 6 }, md: { span: 24 } }"
-              :wrapperCol="{ lg: { span: 18 }, md: { span: 24 } }"
             >
               <validation-provider
                 name="Tên ngắn gọn"
@@ -94,7 +92,6 @@
                 </a-select>
               </a-form-item>
               <a-form-item
-                :wrapperCol="{ lg: { offset: 6, span: 18 }, md: { span: 24 } }"
               >
                 <a-button :loading="loading" htmlType="submit" type="primary"
                   >Lưu danh mục</a-button
