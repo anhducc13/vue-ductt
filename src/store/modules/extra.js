@@ -2,7 +2,9 @@ import { fetchExtraData } from "@/api/extra-data";
 
 const state = {
   extraData: {
-    categories: []
+    categories: [],
+    publishers: [],
+    authors: [],
   }
 };
 

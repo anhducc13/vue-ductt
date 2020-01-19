@@ -76,11 +76,7 @@
                   v-model="formData.parent_id"
                   :filterOption="filterOption"
                 >
-                  <a-select-option v-for="c in categories" :key="c.id">
-                    {{
-                    c.name
-                    }}
-                  </a-select-option>
+                  <a-select-option v-for="c in categories" :key="c.id">{{c.short_name}}</a-select-option>
                 </a-select>
               </a-form-item>
               <a-form-item>

@@ -32,3 +32,19 @@ extend("email", value => {
   return "Email không hợp lệ";
 });
 
+extend("min", {
+  validate(value, { length }) {
+    return value >= length;
+  },
+  params: ["length"],
+  message: "{_field_} phải lớn hơn hoặc bằng {length}"
+});
+
+extend("integer", {
+  validate(value) {
+    return Number.parseInt(value) === value;
+  },
+  params: ["length"],
+  message: "{_field_} phải là số nguyên"
+});
+
