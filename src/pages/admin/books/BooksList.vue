@@ -2,15 +2,15 @@
   <a-spin :spinning="loading">
     <a-card>
       <div class="d-flex justify-content-between" slot="title">
-        <h4>Danh sách danh mục</h4>
-        <a-button type="primary" @click="() => { $router.push({path: '/admin/categories/new'})}">
-          <a-icon type="plus" />Thêm danh mục
+        <h4>Danh sách sách</h4>
+        <a-button type="primary" @click="() => { $router.push({path: '/admin/books/new'})}">
+          <a-icon type="plus" />Thêm sách
         </a-button>
       </div>
       <a-table
         rowKey="id"
         :columns="columns"
-        :dataSource="listCategories.results"
+        :dataSource="listBooks.results"
         bordered
         @change="handleTableChange"
         :pagination="{
@@ -49,7 +49,10 @@
   </a-spin>
 </template>
 <script>
-import { fetchCategoriesList } from "@/api/categories";
+import { fetchBooksList } from "@/api/books";
+import { SALE_STATUS } from "@/constants/products";
+import { cleanRequestBody } from "@/utils/common";
+
 const columns = [
   {
     title: "ID",
@@ -59,11 +62,6 @@ const columns = [
   {
     title: "Tên hiển thị",
     dataIndex: "short_name",
-    sorter: true
-  },
-  {
-    title: "Tên đầy đủ",
-    dataIndex: "name",
     sorter: true
   },
   {
@@ -81,13 +79,23 @@ const columns = [
     ]
   },
   {
-    title: "Danh mục cha",
-    dataIndex: "parent",
-    scopedSlots: { customRender: "parent" },
-    filters: [
-      { text: "Danh mục cấp 1", value: "parent" },
-      { text: "Danh mục cấp 2", value: "children" }
-    ]
+    title: "Trạng thái hàng",
+    dataIndex: "sale_status",
+    scopedSlots: { customRender: "saleStatus" },
+    filters: Object.values(SALE_STATUS).map(e => ({
+      text: e.name,
+      value: e.key
+    }))
+  },
+  {
+    title: "Tồn kho",
+    dataIndex: "quantity_in_stock",
+    sorter: true
+  },
+  {
+    title: "Giá bán",
+    dataIndex: "sale_price",
+    sorter: true
   },
   {
     title: "Thao tác",
@@ -98,7 +106,7 @@ const columns = [
 ];
 
 export default {
-  name: "CategoriesList",
+  name: "BooksList",
   data() {
     return {
       filters: {
@@ -106,22 +114,23 @@ export default {
         page_size: 10,
         q: ""
       },
-      listCategories: {
+      listBooks: {
         total_items: 0,
         results: []
       },
-      columns
+      columns,
+      loading: false,
     };
   },
   mounted() {
-    this.fetchList();
+    this.fetchList({});
   },
   methods: {
     async fetchList(params) {
       this.loading = true;
       try {
-        const { data } = await fetchCategoriesList(params);
-        this.listCategories = data;
+        const { data } = await fetchBooksList(cleanRequestBody(params));
+        this.listBooks = data;
       } catch {
         //
       } finally {
@@ -131,23 +140,17 @@ export default {
     handleTableChange(pagination, filters, sorter) {
       const { current: page, pageSize: page_size } = pagination;
       const { order, columnKey } = sorter;
-      const { parent, is_active } = filters;
       let newFilters = { page, page_size, q: this.filters.q };
       const { q } = this.filters;
+      const { sale_status, is_active } = filters;
       if (q) {
         newFilters = { ...newFilters, q };
       }
       if (columnKey) {
         newFilters = { ...newFilters, sort_by: columnKey, order_by: order };
       }
-      if (parent && Array.isArray(parent) && parent.length) {
-        if (parent.includes("parent") && parent.includes("children")) {
-          //
-        } else if (parent.includes("parent")) {
-          newFilters = { ...newFilters, is_parent: true };
-        } else if (parent.includes("children")) {
-          newFilters = { ...newFilters, is_parent: false };
-        }
+      if (sale_status) {
+        newFilters = { ...newFilters, sale_status: sale_status.join(",") };
       }
       if (is_active && Array.isArray(is_active) && is_active.length) {
         if (is_active.includes("1") && is_active.includes("0")) {

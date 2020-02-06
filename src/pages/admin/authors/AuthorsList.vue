@@ -14,6 +14,7 @@
         bordered
         @change="handleTableChange"
         :pagination="{
+          total: listAuthors.total_items,
           current: filters.page,
           pageSize: filters.page_size,
           showQuickJumper: true,
@@ -36,14 +37,22 @@
         <span slot="action" slot-scope="text, record">
           <a-button @click="() => handleOpenModalEdit(record.id)" size="small" type="link">Chỉnh sửa</a-button>
           <a-divider type="vertical" />
-          <a-button size="small" type="link">Xóa</a-button>
+          <a-popconfirm
+            title="Xóa (nhóm) tác giả này?"
+            @confirm="() => handleDeleteAuthor(record.id)"
+            okText="Đồng ý"
+            cancelText="Không"
+            placement="topRight"
+          >
+            <a-button size="small" type="link">Xóa</a-button>
+          </a-popconfirm>
         </span>
       </a-table>
-      <a-modal v-model="visible" @cancel="visible = false" :footer="null">
-        <span v-if="isEditAuthor" slot="title">Chỉnh sửa (nhóm) tác giả</span>
+      <a-modal v-model="visible" @cancel="handleClodeModal" :footer="null">
+        <span v-if="isEdit" slot="title">Chỉnh sửa (nhóm) tác giả</span>
         <span v-else slot="title">Thêm (nhóm) tác giả</span>
         <validation-observer ref="form" v-slot="{ handleSubmit }">
-          <a-form @submit.prevent="handleSubmit(handleCreate)">
+          <a-form @submit.prevent="handleSubmit(handleCreateOrEdit)">
             <validation-provider
               name="Tên tác giả"
               rules="required|minLength:8"
@@ -62,7 +71,7 @@
               <a-rate v-model="author.rate" />
             </a-form-item>
             <a-form-item label="Mô tả">
-              <markdown-editor v-bind:value="author.description" />
+              <markdown-editor v-model="author.description" />
             </a-form-item>
             <div class="d-flex justify-content-end">
               <a-button class="mr-2" @click.prevent="visible=false">Cancel</a-button>
@@ -75,7 +84,15 @@
   </a-spin>
 </template>
 <script>
-import { fetchAuthorsList, fetchAuthor } from "@/api/authors";
+import { notification } from "ant-design-vue";
+import {
+  fetchAuthorsList,
+  fetchAuthor,
+  addAuthor,
+  editAuthor,
+  deleteAuthor
+} from "@/api/authors";
+import { cleanRequestBody } from "@/utils/common";
 import MarkdownEditor from "@/components/shared/MarkdownEditor";
 const columns = [
   {
@@ -90,13 +107,14 @@ const columns = [
   },
   {
     title: "URL",
-    dataIndex: "display_url",
+    dataIndex: "url",
     sorter: true
   },
   {
     title: "Xếp hạng",
     key: "rate",
     dataIndex: "rate",
+    sorter: true,
     scopedSlots: { customRender: "rate" }
   },
   {
@@ -127,29 +145,28 @@ export default {
         total_items: 0,
         results: []
       },
-      author: defaultFormdata,
+      author: { ...defaultFormdata },
       columns,
       visible: false,
-      loading: false
+      loading: false,
+      isEdit: false
     };
   },
   mounted() {
-    this.loading = true;
-    fetchAuthorsList()
-      .then(res => {
-        const { result } = res;
-        this.listAuthors = result;
-      })
-      .finally(() => {
-        this.loading = false;
-      });
-  },
-  computed: {
-    isEditAuthor() {
-      return this.author && this.author.id;
-    }
+    this.fetchList({});
   },
   methods: {
+    async fetchList(params) {
+      this.loading = true;
+      try {
+        const { data } = await fetchAuthorsList(params);
+        this.listAuthors = data;
+      } catch {
+        //
+      } finally {
+        this.loading = false;
+      }
+    },
     handleTableChange(pagination, filters, sorter) {
       const { current: page, pageSize: page_size } = pagination;
       const { order, columnKey } = sorter;
@@ -162,35 +179,74 @@ export default {
         newFilters = { ...newFilters, sort_by: columnKey, order_by: order };
       }
       this.filters = newFilters;
-      console.log(newFilters);
+      this.fetchList(newFilters);
     },
     onSearch(text) {
       this.filters.q = text.trim();
+      this.fetchList(this.filters);
     },
     handleOpenModalAdd() {
+      this.author = { ...defaultFormdata };
+      this.isEdit = false;
       this.visible = true;
     },
-    handleOpenModalEdit(id) {
+    async handleOpenModalEdit(id) {
       this.loading = true;
-      fetchAuthor(id)
-        .then(res => {
-          const { result } = res;
-          this.author = result;
-          this.visible = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      try {
+        const { data } = await fetchAuthor(id);
+        this.isEdit = true;
+        this.author = data;
+        this.visible = true;
+        this.loading = false;
+      } catch {
+        //
+      } finally {
+        this.loading = false;
+      }
     },
-    handleCreate() {
-      console.log(this.author);
-    }
-  },
-  watch: {
-    visible() {
-      if (!this.visible) {
-        this.$refs.form.reset();
-        this.author = defaultFormdata;
+    handleClodeModal() {
+      this.visible = false;
+      this.author = { ...defaultFormdata };
+      this.$refs.form.reset();
+    },
+    async handleCreateOrEdit() {
+      try {
+        if (this.isEdit) {
+          await editAuthor(this.author.id, cleanRequestBody(this.author));
+          notification.success({
+            message: "Thành công",
+            description: "Chỉnh sửa thành công"
+          });
+          this.handleClodeModal();
+          this.fetchList(this.filters);
+        } else {
+          const { data } = await addAuthor(cleanRequestBody(this.author));
+          notification.success({
+            message: "Thành công",
+            description: `Thêm mới thành công (nhóm) tác giả ${data.name}`
+          });
+          this.handleClodeModal();
+          this.fetchList(this.filters);
+        }
+      } catch (err) {
+        //
+      }
+    },
+    async handleDeleteAuthor(id) {
+      this.loading = true;
+      try {
+        await deleteAuthor(id);
+        notification.success({
+          message: "Thành công",
+          description: "Xóa thành công"
+        });
+
+        this.filters = { ...this.filters, page: 1 };
+        this.fetchList(this.filters);
+      } catch {
+        //
+      } finally {
+        this.loading = false;
       }
     }
   }

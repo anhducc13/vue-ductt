@@ -17,7 +17,7 @@
           </a-button>
         </div>
         <validation-observer ref="bookForm" v-slot="{ handleSubmit }">
-          <a-form @submit.prevent="handleSubmit(saveCategory)">
+          <a-form @submit.prevent="handleSubmit(saveBook)">
             <a-divider>
               <h4>Thông tin chung</h4>
             </a-divider>
@@ -63,13 +63,14 @@
               <a-form-item label="Danh mục">
                 <a-select
                   allowClear
+                  mode="multiple"
                   placeholder="Chọn danh mục"
                   :style="{width: '100%'}"
+                  optionFilterProp="children"
+                  :filterOption="filterOption"
                   v-model="formData.category_id"
                 >
-                  <a-select-opt-group v-for="c in categories" :key="c.id" :label="c.short_name">
-                    <a-select-option v-for="cc in c.children" :key="cc.id">{{ cc.short_name }}</a-select-option>
-                  </a-select-opt-group>
+                  <a-select-option v-for="c in categories" :key="c.id">{{c.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -114,7 +115,7 @@
                 <a-switch v-model="formData.is_active" />
               </a-form-item>
             </a-col>
-            <a-col :span="24">
+            <a-col :lg="{ span: 24}">
               <a-form-item label="Mô tả ngắn">
                 <a-textarea
                   placeholder="Nhập mô tả ngắn"
@@ -123,9 +124,9 @@
                 />
               </a-form-item>
             </a-col>
-            <a-col :span="24">
+            <a-col :lg="{ span: 24}">
               <a-form-item label="Mô tả sách">
-                <markdown-editor v-bind:value="formData.description" />
+                <markdown-editor v-model="formData.description" />
               </a-form-item>
             </a-col>
             <a-col :lg="{ span: 12}">
@@ -159,9 +160,16 @@
               </a-form-item>
             </a-col>
             <a-col :span="24">
-              <a-form-item label="Hình ảnh sản phẩm">
+              <a-form-item>
+                <span slot="label">
+                  Hình ảnh sản phẩm&nbsp;
+                  <a-tooltip title="Tối đa 5 hình ảnh, cho phép định dạng jpg/png">
+                    <a-icon type="question-circle-o" />
+                  </a-tooltip>
+                </span>
                 <a-upload
                   :customRequest="uploadImage"
+                  :beforeUpload="beforeUpLoadImage"
                   listType="picture-card"
                   :fileList="fileListImage"
                   @preview="handlePreviewImage"
@@ -178,9 +186,20 @@
               </a-modal>
             </a-col>
             <a-col :span="24">
-              <a-form-item label="Bản đọc thử">
-                <a-upload :action="uploadImage" :fileList="fileDemo" @change="handleChangeFileDemo">
-                  <a-button :disabled="fileDemo.length >= 1">
+              <a-form-item>
+                <span slot="label">
+                  Bản đọc thử&nbsp;
+                  <a-tooltip title="Chỉ tải lên 1 file ở định dạng doc/docx/pdf">
+                    <a-icon type="question-circle-o" />
+                  </a-tooltip>
+                </span>
+                <a-upload
+                  :customRequest="uploadFileDemo"
+                  :beforeUpload="beforeUpLoadFileDemo"
+                  :fileList="fileDemo"
+                  @change="handleChangeFileDemo"
+                >
+                  <a-button v-if="fileDemo.length === 0">
                     <a-icon type="upload" />Tải lên
                   </a-button>
                 </a-upload>
@@ -304,7 +323,10 @@
 import firebase from "firebase";
 import MarkdownEditor from "@/components/shared/MarkdownEditor";
 import { mapGetters } from "vuex";
-import { extraCategories, generateNameFromTime } from "@/utils/common";
+import { message, notification } from "ant-design-vue";
+import { addBook } from "@/api/books";
+import { cleanRequestBody } from "@/utils/common";
+import { generateNameFromTime } from "@/utils/common";
 import { SALE_STATUS } from "@/constants/products";
 
 const defaultFormdata = {
@@ -327,7 +349,7 @@ const defaultFormdata = {
   root_price: null,
   sale_price: null,
   images: [],
-  demo: null
+  demo: null,
 };
 
 export default {
@@ -335,14 +357,16 @@ export default {
   components: { MarkdownEditor },
   data() {
     return {
-      formData: defaultFormdata,
+      formData: { ...defaultFormdata },
       loading: false,
       SALE_STATUS,
       upcomingStatus: SALE_STATUS.UPCOMING.key,
       outOfStockStatus: SALE_STATUS.OUTOFSTOCK.key,
       previewVisible: false,
       previewImage: "",
+      showImage: true,
       fileListImage: [],
+      showFileDemo: true,
       fileDemo: []
     };
   },
@@ -379,7 +403,7 @@ export default {
       url: img
     }));
     if (this.formData.demo) {
-      const file = this.formData.demo;
+      const { demo: file } = this.formData;
       this.fileDemo = [
         {
           uid: file,
@@ -395,7 +419,7 @@ export default {
     categories() {
       const { categories } = this.extraData;
       if (Array.isArray(categories)) {
-        return extraCategories(categories);
+        return categories;
       }
       return [];
     },
@@ -426,7 +450,10 @@ export default {
         obj = { ...obj, integer: true };
       }
       return obj;
-    }
+    },
+    isEditBook: function() {
+      return !!this.$route.params.id;
+    },
   },
   methods: {
     handleCancelPreviewImage() {
@@ -437,8 +464,12 @@ export default {
       this.previewVisible = true;
     },
     handleChangeImage({ fileList }) {
-      this.fileListImage = fileList;
-      this.formData.images = fileList.filter(f => f.status === "done").map(f => f.response.url);
+      if (this.showImage) {
+        this.fileListImage = fileList;
+        this.formData.images = fileList
+          .filter(f => f.status === "done")
+          .map(f => f.response.url);
+      }
     },
     filterOption(input, option) {
       return (
@@ -448,20 +479,60 @@ export default {
       );
     },
     handleChangeFileDemo(info) {
-      let fileDemo = [...info.fileList];
-      fileDemo = fileDemo.slice(-2);
-      fileDemo = fileDemo.map(file => {
-        if (file.response) {
-          file.url = file.response.url;
-        }
-        return file;
-      });
-      this.fileDemo = fileDemo;
+      if (this.showFileDemo) {
+        let fileDemo = [...info.fileList];
+        fileDemo = fileDemo.slice(-2);
+        fileDemo = fileDemo.map(file => {
+          if (file.response) {
+            file.url = file.response.url;
+          }
+          return file;
+        });
+        this.fileDemo = fileDemo;
+        const listUrl = fileDemo
+          .filter(f => f.status === "done")
+          .map(f => f.url);
+        this.formData.demo = listUrl[0];
+      }
     },
-    uploadImage({ file, onProgress, onSuccess, onError }) {
+    beforeUpLoadFileDemo(file) {
+      const ext = file.name.split(".").pop();
+      const isDocumentFile = ext === "pdf" || ext === "docx" || ext === "doc";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isDocumentFile) {
+        message.error("File xem trước phải ở định dạng doc/docx/pdf");
+        this.showFileDemo = false;
+        return false;
+      } else if (!isLt2M) {
+        message.error("File phải có kích thước nhỏ hơn 2MB!");
+        this.showFileDemo = false;
+        return false;
+      } else {
+        this.showFileDemo = true;
+        return true;
+      }
+    },
+    beforeUpLoadImage(file) {
+      const isJpgOrPng =
+        file.type === "image/jpeg" || file.type === "image/png";
+      const isLt1M = file.size / 1024 / 1024 < 1;
+      if (!isJpgOrPng) {
+        message.error("Ảnh phải ở định dạng jpg/png!");
+        this.showImage = false;
+        return false;
+      } else if (!isLt1M) {
+        message.error("Ảnh phải có kích thước nhỏ hơn 1MB!");
+        this.showImage = false;
+        return false;
+      } else {
+        this.showImage = true;
+        return true;
+      }
+    },
+    uploadFile(folderName, { file, onProgress, onSuccess, onError }) {
       const storageRef = firebase
         .storage()
-        .ref(`images/${generateNameFromTime()}`)
+        .ref(`${folderName}/${generateNameFromTime()}`)
         .put(file);
       storageRef.on(
         `state_changed`,
@@ -475,7 +546,6 @@ export default {
         },
         () => {
           storageRef.snapshot.ref.getDownloadURL().then(url => {
-            console.log(url);
             onSuccess({
               name: url,
               status: "done",
@@ -485,8 +555,31 @@ export default {
         }
       );
     },
-    saveCategory() {
-      console.log(this.formData);
+    uploadFileDemo({ file, onProgress, onSuccess, onError }) {
+      this.uploadFile("files", { file, onProgress, onSuccess, onError });
+    },
+    uploadImage({ file, onProgress, onSuccess, onError }) {
+      this.uploadFile("images", { file, onProgress, onSuccess, onError });
+    },
+    async saveBook() {
+      this.loading = true;
+      try {
+        if (this.isEditBook) {
+          this.$router.push({ path: "/admin/books/list" });
+        } else {
+          const { data } = await addBook(cleanRequestBody(this.formData));
+          notification.success({
+            message: "Thành công",
+            description: `Thêm mới thành công sách ${data.short_name}`
+          });
+          this.$router.push({ path: "/admin/books/list" });
+        }
+      } catch (err) {
+        console.log(err)
+        //
+      } finally {
+        this.loading = false;
+      }
     }
   },
   watch: {

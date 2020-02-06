@@ -19,9 +19,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       fetchExtraData()
         .then(response => {
-          const { result } = response;
-          if (result) {
-            commit("SET_EXTRA_DATA", result);
+          const { data: { results } } = response;
+          if (results) {
+            commit("SET_EXTRA_DATA", results);
             resolve();
           } else {
             reject();

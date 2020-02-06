@@ -16,3 +16,14 @@ export const extraCategories = (categories) => {
 export const generateNameFromTime = () => {
   return Date.now().toString() + uuidv4();
 }
+
+export const cleanRequestBody = (body) => {
+  Object.keys(body).map(key => {
+    if (!body[key]) {
+      delete body[key];
+    }
+    return key;
+  })
+  console.log(body)
+  return body;
+}

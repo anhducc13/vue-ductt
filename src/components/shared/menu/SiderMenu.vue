@@ -1,7 +1,7 @@
 <template>
   <a-layout-sider
     :class="[theme, 'sider', isMobile ? null : 'shadow']"
-    width="256px"
+    width="248px"
     :collapsible="collapsible"
     v-model="collapsed"
     :trigger="null"
