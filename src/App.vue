@@ -8,7 +8,7 @@
 
 <script>
 import enquireScreen from "./utils/device";
-const defaultLayout = "default";
+const defaultLayout = "no";
 export default {
   computed: {
     layout() {

@@ -1,5 +1,6 @@
 "use strict";
 const path = require("path");
+const webpack = require("webpack");
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -36,7 +37,15 @@ module.exports = {
       alias: {
         "@": resolve("src")
       }
-    }
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+        $: "jquery",
+        jquery: "jquery",
+        "window.jQuery": "jquery",
+        jQuery: "jquery"
+      })
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete("preload"); // TODO: need test

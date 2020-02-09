@@ -1,71 +1,15 @@
 import Vue from "vue";
 import Router from "vue-router";
+import userRouter from './userRouter';
+import adminRouter from "./adminRouter";
 
 Vue.use(Router);
 
 const router = new Router({
   mode: "history",
   routes: [
-    {
-      path: "/",
-      meta: { layout: "default" },
-      component: () => import("@/pages/user/Home.vue") // load sync home
-    },
-    {
-      path: "/admin",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/Home.vue")
-    },
-    {
-      path: "/admin/users/all",
-      meta: { layout: "admin" },
-      component: () => import("@/components/shared/Tinymce/index")
-    },
-    {
-      path: "/admin/users/add",
-      meta: { layout: "admin" },
-      component: () => import("@/components/shared/Tinymce/index")
-    },
-    {
-      path: "/admin/categories/list",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/categories/CategoriesList")
-    },
-    {
-      path: "/admin/categories/new",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/categories/CategoryNew")
-    },
-    {
-      path: "/admin/categories/:id/edit",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/categories/CategoryNew")
-    },
-    {
-      path: "/admin/authors",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/authors/AuthorsList")
-    },
-    {
-      path: "/admin/publishers",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/publishers/PublishersList")
-    },
-    {
-      path: "/admin/books/new",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/books/BookNew")
-    },
-    {
-      path: "/admin/books/list",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/books/BooksList")
-    },
-    {
-      path: "/admin/books/:id/edit",
-      meta: { layout: "admin" },
-      component: () => import("@/pages/admin/books/BookNew")
-    },
+    ...userRouter,
+    ...adminRouter,
     {
       path: "/admin/login",
       component: () => import("@/pages/admin/Login")
@@ -82,11 +26,6 @@ const router = new Router({
       path: "/404",
       component: () => import("@/pages/shared/404.vue")
     },
-    {
-      path: "*",
-      redirect: "/404",
-      component: () => import("@/pages/shared/404.vue")
-    }
   ]
 });
 

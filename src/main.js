@@ -5,6 +5,9 @@ import "ant-design-vue/dist/antd.css";
 import Antd from "ant-design-vue";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import firebase from 'firebase';
+import "owl.carousel/dist/assets/owl.carousel.min.css";
+import "owl.carousel/dist/assets/owl.theme.default.min.css";
+import "owl.carousel";
 
 import "normalize.css/normalize.css"; // a modern alternative to CSS resets
 
@@ -12,6 +15,7 @@ import store from "./store";
 
 import AdminLayout from "./layouts/AdminLayout.vue";
 import DefaultLayout from "./layouts/DefaultLayout.vue";
+import NoLayout from "./layouts/NoLayout.vue";
 
 import "@/styles/index.scss"; // global css
 
@@ -34,14 +38,17 @@ firebase.initializeApp(firebaseConfig);
 Vue.config.productionTip = false;
 Vue.component("admin-layout", AdminLayout);
 Vue.component("default-layout", DefaultLayout);
+Vue.component("no-layout", NoLayout);
 Vue.component("validation-provider", ValidationProvider);
 Vue.component("validation-observer", ValidationObserver);
 
 Vue.use(Antd);
 
-new Vue({
+const vueApp = new Vue({
   el: "#app",
   router,
   store,
   render: h => h(App)
 });
+
+export default vueApp;
