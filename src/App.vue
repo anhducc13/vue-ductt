@@ -24,13 +24,19 @@ export default {
     });
   },
   mounted() {
-    new Mmenu($(".category-mobile"));
-    document.addEventListener("click", evnt => {
-      let anchor = evnt.target.closest('a[href^="#/"]');
-      if (anchor) {
-        // Go somewhere
-        evnt.preventDefault();
-      }
+    $(document).ready(() => {
+      new Mmenu("#category-mobile", {
+        offCanvas: {
+          zposition: "front",
+          position: "right"
+        }
+      });
+      new Mmenu("#menu-mobile", {
+        offCanvas: {
+          zposition: "front",
+          position: "left"
+        }
+      });
     });
   }
 };

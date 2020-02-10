@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import Mmenu from "mmenu-js";
 import uuid from "uuid";
 import Slideshow from "@/components/user/Slideshow";
 import ProductListCarousel from "@/components/user/ProductListCarousel";
@@ -30,17 +29,6 @@ export default {
     };
   },
   mounted() {
-    // $(document).ready(function() {
-    console.log($("#category-mobile"));
-    document.addEventListener("DOMContentLoaded", () => {
-      new Mmenu("#category-mobile", {
-        offCanvas: {
-          zposition: "front",
-          position: "right"
-        }
-      });
-      // });
-    });
     const listProduct = [];
     for (let i = 0; i < 20; i++) {
       listProduct.push({
