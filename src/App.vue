@@ -24,18 +24,20 @@ export default {
     });
   },
   mounted() {
-    $(document).ready(() => {
-      new Mmenu("#category-mobile", {
-        offCanvas: {
-          zposition: "front",
-          position: "right"
-        }
-      });
-      new Mmenu("#menu-mobile", {
-        offCanvas: {
-          zposition: "front",
-          position: "left"
-        }
+    this.$nextTick(() => {
+      $(document).ready(() => {
+        new Mmenu("#category-mobile", {
+          offCanvas: {
+            zposition: "front",
+            position: "right"
+          }
+        });
+        new Mmenu("#menu-mobile", {
+          offCanvas: {
+            zposition: "front",
+            position: "left"
+          }
+        });
       });
     });
   }

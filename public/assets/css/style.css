@@ -3078,6 +3078,7 @@ ul.submenu-mobile > li > a {
 
 .social-media ul li {
   display: inline-block;
+  margin-right: 5px;
 }
 
 .social-media ul li a {

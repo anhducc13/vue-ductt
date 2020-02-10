@@ -103,8 +103,9 @@ export default {
         }
       });
       $(".sync2").on("click", ".owl-item", function(e) {
+        const to = $(this).index();
         e.preventDefault();
-        $(".sync1").trigger("to.owl.carousel", $(this).index());
+        $(".sync1").trigger("to.owl.carousel", to);
       });
     },
     syncPosition(el) {
