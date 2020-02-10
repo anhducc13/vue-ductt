@@ -8,7 +8,7 @@
             <div class="footer-mid-contact">
               <h2>
                 <router-link class="logo" to="/">
-                  <img alt="Alpha Books" src="assets/images/logo_footer.png" />
+                  <img alt="Alpha Books" src="/assets/images/logo_footer.png" />
                 </router-link>
               </h2>
               <ul style="margin-top: 30px;">

@@ -4,10 +4,13 @@ import router from "./router";
 import "ant-design-vue/dist/antd.css";
 import Antd from "ant-design-vue";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
-import firebase from 'firebase';
+import firebase from "firebase";
 import "owl.carousel/dist/assets/owl.carousel.min.css";
 import "owl.carousel/dist/assets/owl.theme.default.min.css";
 import "owl.carousel";
+
+import "mmenu-js/dist/mmenu.css";
+import "mmenu-js/dist/mmenu.js";
 
 import "normalize.css/normalize.css"; // a modern alternative to CSS resets
 

@@ -354,8 +354,29 @@
 </template>
 
 <script>
+import $ from "jquery";
 export default {
-  name: "HeaderMenuDesktop"
+  name: "HeaderMenuDesktop",
+  mounted() {
+    this.$nextTick(() => {
+      this.expandCategories();
+    });
+  },
+  methods: {
+    expandCategories() {
+      $(".open-close").on("click", function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        $this
+          .parents(".v-megamenu-container")
+          .find(".v-megamenu")
+          .stop()
+          .slideToggle();
+        $(this).toggleClass("active");
+        return false;
+      });
+    }
+  }
 };
 </script>
 

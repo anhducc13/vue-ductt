@@ -80,8 +80,40 @@
 </template>
 
 <script>
+import $ from "jquery";
 export default {
-  name: "HeaderContainer"
+  name: "HeaderContainer",
+  mounted() {
+    this.$nextTick(() => {
+      this.slideEffectAjax();
+    });
+  },
+  methods: {
+    slideEffectAjax() {
+      var ww = $(window).width();
+      if (ww > 767) {
+        $(".cart-total").mouseenter(function() {
+          $(this)
+            .find(".cart-droplist__content")
+            .stop(true, true)
+            .slideDown();
+        });
+
+        $(".cart-total").mouseleave(function() {
+          $(this)
+            .find(".cart-droplist__content")
+            .stop(true, true)
+            .slideUp();
+        });
+      } else {
+        $(".cart-total").click(function() {
+          $(this)
+            .find(".cart-droplist__content")
+            .slideToggle(300);
+        });
+      }
+    }
+  }
 };
 </script>
 
