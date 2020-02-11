@@ -20,21 +20,15 @@
             <div class="cart-total">
               <ul>
                 <li>
-                  <a class="cart-toggler" href="cart.html">
+                  <router-link class="cart-toggler" to="/gio-hang">
                     <span class="cart-no">
                       <span class="cart-icon"></span>
                       <i class="fa fa-shopping-cart"></i> (
-                      <span id="cart-total">0</span>) sản phẩm
+                      <span id="cart-total">2</span>) sản phẩm
                     </span>
-                  </a>
+                  </router-link>
                   <div class="cart-droplist d-none d-sm-block">
-                    <div class="cart-droplist__content arrow_box">
-                      <div class="cart-droplist__status">
-                        <i class="fa fa-check" aria-hidden="true"></i>
-                        <span class="cart-counter-list">0</span> Sản phẩm trong giỏ hàng
-                      </div>
-                      <div id="cart-sidebar" class="mini-list"></div>
-                    </div>
+                    <cart-mobile />
                   </div>
                 </li>
               </ul>
@@ -81,8 +75,10 @@
 
 <script>
 import $ from "jquery";
+import CartMobile from "@/components/user/Cart/CartMobile";
 export default {
   name: "HeaderContainer",
+  components: { CartMobile },
   mounted() {
     this.$nextTick(() => {
       this.slideEffectAjax();

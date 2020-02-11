@@ -29,6 +29,7 @@ export default {
     };
   },
   mounted() {
+    console.log(this.$router);
     const listProduct = [];
     for (let i = 0; i < 20; i++) {
       listProduct.push({
