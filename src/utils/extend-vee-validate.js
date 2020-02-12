@@ -48,3 +48,7 @@ extend("integer", {
   message: "{_field_} phải là số nguyên"
 });
 
+extend("phoneNumber", () => {
+  return true;
+})
+

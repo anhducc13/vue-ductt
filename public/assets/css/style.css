@@ -55,7 +55,7 @@ img {
   height: 32px;
   border: none;
   text-indent: 100%;
-  background: url("../images/move-up.png") no-repeat 0px 0px;
+  background: url("/assets/images/move-up.png") no-repeat 0px 0px;
 }
 
 #toTopHover {
@@ -2110,7 +2110,7 @@ ul.submenu-mobile > li > a {
 
 .breadcrumbs ul li a {
   color: #444;
-  background: url(icon_breadcrumb381f.png?1578392962746) center right no-repeat;
+  // background: url(icon_breadcrumb381f.png?1578392962746) center right no-repeat;
   padding-right: 15px;
   background-size: 8px;
   line-height: 20px;

@@ -29,13 +29,12 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$router);
     const listProduct = [];
     for (let i = 0; i < 20; i++) {
       listProduct.push({
         id: uuid.v4(),
         name: "HBR ONPOINT BOXSET (9 cuốn)",
-        url: "",
+        url: "12",
         images: [
           "https://bizweb.dktcdn.net/100/197/269/products/docton.jpg?v=1566442814243"
         ],

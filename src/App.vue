@@ -7,8 +7,6 @@
 </template>
 
 <script>
-import $ from "jquery";
-import Mmenu from "mmenu-js";
 import enquireScreen from "./utils/device";
 const defaultLayout = "no";
 export default {
@@ -23,23 +21,23 @@ export default {
       _this.$store.dispatch("app/setDevice", isMobile);
     });
   },
-  mounted() {
-    this.$nextTick(() => {
-      $(document).ready(() => {
-        new Mmenu("#category-mobile", {
-          offCanvas: {
-            zposition: "front",
-            position: "right"
-          }
-        });
-        new Mmenu("#menu-mobile", {
-          offCanvas: {
-            zposition: "front",
-            position: "left"
-          }
-        });
-      });
-    });
-  }
+  // mounted() {
+  //   this.$nextTick(() => {
+  //     $(document).ready(() => {
+  //       new Mmenu("#category-mobile", {
+  //         offCanvas: {
+  //           zposition: "front",
+  //           position: "right"
+  //         }
+  //       });
+  //       new Mmenu("#menu-mobile", {
+  //         offCanvas: {
+  //           zposition: "front",
+  //           position: "left"
+  //         }
+  //       });
+  //     });
+  //   });
+  // }
 };
 </script>

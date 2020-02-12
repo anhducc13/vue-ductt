@@ -6,30 +6,15 @@
     </div>
     <div class="mini-list">
       <ul class="list-item-cart">
-        <li class="item">
-          <product-image />
+        <li class="item" v-for="item in list" :key="item.id">
+          <product-image :alt="item.name" :src="item.images[0]" :url="item.url" />
           <div class="detail-item">
             <div class="product-details">
               <icon-remove />
-              <product-name />
+              <product-name :name="item.name" :url="item.url" />
             </div>
             <div class="product-details-bottom">
-              <span class="price">87.200₫</span>
-              <div class="quantity-select">
-                <product-quantity />
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="item">
-          <product-image />
-          <div class="detail-item">
-            <div class="product-details">
-              <icon-remove />
-              <product-name />
-            </div>
-            <div class="product-details-bottom">
-              <span class="price">179.000₫</span>
+              <span class="price">{{item.sale_price}}₫</span>
               <div class="quantity-select">
                 <product-quantity />
               </div>
@@ -52,6 +37,7 @@
           </span>
         </button>
         <button
+          v-if="backToHome"
           class="btn-checkout btn-return"
           type="button"
           @click="() => $router.push({ path: '/' })"
@@ -71,7 +57,19 @@ import ProductImage from "../ProductImage";
 import ProductQuantity from "../ProductQuantity";
 import IconRemove from "../IconRemove";
 export default {
-  components: { ProductName, ProductImage, ProductQuantity, IconRemove }
+  components: { ProductName, ProductImage, ProductQuantity, IconRemove },
+  props: {
+    list: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    backToHome: {
+      type: Boolean,
+      default: false
+    }
+  }
 };
 </script>
 

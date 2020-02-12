@@ -8,9 +8,9 @@
           </div>
         </div>
 
-        <a href="hbr-onpoint-boxset-9-cuon.html" class="prod-img">
+        <router-link :to="`/san-pham/${item.url}`" class="prod-img">
           <img :src="item.images[0]" :alt="item.name" />
-        </a>
+        </router-link>
 
         <span class="tz-shop-meta">
           <input type="hidden" name="variantId" value="25662565" />
