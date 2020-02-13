@@ -5,15 +5,15 @@ import slugify from "slugify";
 export const generateBook = () => {
   const id = faker.random.number(1000);
   const name = faker.random.words(15);
-  const price = faker.commerce.price();
+  const price = faker.random.number(1000000);
   const res = {
     id,
     short_name: name,
     name,
     url: slugify(name),
     images: [1, 2, 3].map(() => `https://i.picsum.photos/id/${id}/200/300.jpg`),
-    sale_price: price,
-    root_price: faker.commerce.price(price)
+    root_price: price,
+    sale_price: faker.random.number(price)
   };
   return res;
 };

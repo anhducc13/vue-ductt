@@ -1,4 +1,5 @@
 const state = {
+  openModalCart: false,
   products_of_cart: [],
   sub_total: 0,
 };
@@ -10,10 +11,15 @@ const actions = {
   getCartAfterOrder({ commit }) {
     commit("getCartAfterOrder");
   },
-
+  setModalCart({ commit }, data) {
+    commit("setOpenModal", data);
+  }
 };
 
 const mutations = {
+  setOpenModal(state, isOpen) {
+    state.openModalCart = isOpen;
+  },
   getCartSuccess(state, cart) {
     state.products_of_cart = cart.products;
     state.sub_total = cart.sub_total;

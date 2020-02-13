@@ -16,7 +16,7 @@
 
         <span class="tz-shop-meta">
           <input type="hidden" name="variantId" value="25662565" />
-          <a href="javascript:void(0);" class="tzshopping add_to_cart add-cart" title="Mua ngay">
+          <a href="javascript:void(0);" class="tzshopping add_to_cart add-cart" title="Mua ngay" @click="() => buyNow(item)">
             <i class="fa fa-shopping-cart"></i> Mua ngay
           </a>
         </span>
@@ -47,7 +47,9 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { numberWithDots, shortText } from "@/utils/display";
+import { getCart as getMyCart, addToCart as addProdToCart } from "@/api/home/checkoutServices";
 export default {
   name: "ProductItem",
   props: {
@@ -65,6 +67,17 @@ export default {
     },
     name() {
       return n => (n === shortText(n) ? n : `${shortText(n)} ...`);
+    }
+  },
+  methods: {
+    ...mapActions("cart", ["getCart", "setModalCart"]),
+    addToCart(product, qty = 1) {
+      addProdToCart(product, qty);
+      this.getCart(getMyCart().data);
+    },
+    buyNow(product) {
+      this.addToCart(product, 1);
+      this.setModalCart(true);
     }
   }
 };

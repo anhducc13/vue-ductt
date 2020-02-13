@@ -17,15 +17,14 @@
       >
         <div class="row">
           <div class="col-md-12 col-sm-12 col-xs-12" id="header-search">
-            <div class="cart-total">
+            <div
+              class="cart-total"
+              @mouseout="displayCartDetail = false"
+              @mouseover="displayCartDetail = true"
+            >
               <ul>
                 <li>
-                  <router-link
-                    class="cart-toggler"
-                    to="/gio-hang"
-                    @mouseout.native="displayCartDetail = false"
-                    @mouseover.native="displayCartDetail = true"
-                  >
+                  <router-link class="cart-toggler" to="/gio-hang">
                     <span class="cart-no">
                       <span class="cart-icon"></span>
                       <i class="fa fa-shopping-cart"></i> (
@@ -75,16 +74,18 @@
         </div>
       </div>
     </div>
+    <cart-modal />
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
 import CartMobile from "@/components/user/Cart/CartMobile";
+import CartModal from "@/components/user/Cart/CartModal";
 import { getCart as getMyCart } from "@/api/home/checkoutServices";
 export default {
   name: "HeaderContainer",
-  components: { CartMobile },
+  components: { CartMobile, CartModal },
   created() {
     this.getCart(getMyCart().data);
   },

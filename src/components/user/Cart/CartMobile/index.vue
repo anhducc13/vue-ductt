@@ -30,7 +30,7 @@
         <button
           class="btn-checkout"
           type="button"
-          @click="() => $router.push({ path: '/thanh-toan' })"
+          @click="toCheckout"
         >
           <span>
             <i class="fa fa-money" aria-hidden="true"></i> Tiến hành đặt hàng
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { message } from "ant-design-vue";
 import { mapState } from "vuex";
 import ProductName from "../ProductName";
 import ProductImage from "../ProductImage";
@@ -70,6 +71,15 @@ export default {
     ...mapState("cart", ["products_of_cart", "sub_total"]),
     price() {
       return p => `${numberWithDots(p)}`;
+    }
+  },
+  methods: {
+    toCheckout() {
+      if (this.products_of_cart.length) {
+        this.$router.push({ path: "/thanh-toan" });
+      } else {
+        message.warning("Không có sản phẩm nào trong giỏ hàng để thanh toán");
+      }
     }
   }
 };

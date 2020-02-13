@@ -26,7 +26,7 @@ class Cart {
     if (!currentCart.products || typeof currentCart.products == "undefined") {
       currentCart.products = [];
     }
-    currentCart = currentCart.map(item => {
+    currentCart.products = currentCart.products.map(item => {
       if (item.id === product.id) {
         isProductInCart = true;
         return {
@@ -112,6 +112,7 @@ class Cart {
         currentCart.products[i].sale_price * currentCart.products[i].qty;
       currentCart.sub_total += currentCart.products[i].total_price;
     }
+    console.log(currentCart.sub_total);
     localStorage.setItem(CART_KEY, JSON.stringify(currentCart));
     this.globalCart = currentCart;
   }

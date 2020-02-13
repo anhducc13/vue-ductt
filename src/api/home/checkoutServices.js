@@ -5,3 +5,7 @@ export const getCart = () => {
     data: MyCart.getCart()
   };
 }
+
+export const addToCart = (product, qty) => {
+  MyCart.addToCart(product, qty);
+}
