@@ -1,21 +1,26 @@
 <template>
   <div class="fvc" style="width:100%;">
     <section class="columns-container">
-      <Slideshow />
-      <product-list-carousel
-        v-for="item in Array(3)"
-        :key="item"
-        :list="listProduct"
-        title="Sách mới"
-      />
+      <Slideshow :list="listSildeshow" />
+      <product-list-carousel :list="listBookBestSeller" title="Sách bán chạy" />
+      <product-list-carousel :list="listBookNew" title="Sách mới" />
+      <product-list-carousel :list="listBookForthcoming" title="Sách sắp xuất bản" />
     </section>
   </div>
 </template>
 
 <script>
-import uuid from "uuid";
 import Slideshow from "@/components/user/Slideshow";
 import ProductListCarousel from "@/components/user/ProductListCarousel";
+import { getCustomData } from "@/api/home/customData";
+
+const CODE = {
+  BOOK_NEW: "book_new",
+  BOOK_BEST_SELLER: "book_best_seller",
+  BOOK_FORTHCOMING: "book_forthcoming",
+  BANNER: "banner"
+};
+
 export default {
   components: {
     Slideshow,
@@ -23,26 +28,30 @@ export default {
   },
   data() {
     return {
-      listProduct: [],
-      listArticle: [],
+      listSildeshow: [],
+      listBookBestSeller: [],
+      listBookNew: [],
+      listBookForthcoming: [],
       sort: "alpha-desc"
     };
   },
-  mounted() {
-    const listProduct = [];
-    for (let i = 0; i < 20; i++) {
-      listProduct.push({
-        id: uuid.v4(),
-        name: "HBR ONPOINT BOXSET (9 cuốn)",
-        url: "12",
-        images: [
-          "https://bizweb.dktcdn.net/100/197/269/products/docton.jpg?v=1566442814243"
-        ],
-        root_price: 150000,
-        sale_price: 120000
-      });
-    }
-    this.listProduct = listProduct;
+  async mounted() {
+    const { results: listSildeshow } = await getCustomData({
+      code: CODE.BANNER
+    });
+    const { results: listBookBestSeller } = await getCustomData({
+      code: CODE.BOOK_BEST_SELLER
+    });
+    const { results: listBookNew } = await getCustomData({
+      code: CODE.BOOK_NEW
+    });
+    const { results: listBookForthcoming } = await getCustomData({
+      code: CODE.BOOK_FORTHCOMING
+    });
+    this.listSildeshow = listSildeshow;
+    this.listBookBestSeller = listBookBestSeller;
+    this.listBookNew = listBookNew;
+    this.listBookForthcoming = listBookForthcoming;
   },
   created() {}
 };

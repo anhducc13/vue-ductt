@@ -20,14 +20,19 @@
             <div class="cart-total">
               <ul>
                 <li>
-                  <router-link class="cart-toggler" to="/gio-hang">
+                  <router-link
+                    class="cart-toggler"
+                    to="/gio-hang"
+                    @mouseout.native="displayCartDetail = false"
+                    @mouseover.native="displayCartDetail = true"
+                  >
                     <span class="cart-no">
                       <span class="cart-icon"></span>
                       <i class="fa fa-shopping-cart"></i> (
-                      <span id="cart-total">2</span>) sản phẩm
+                      <span id="cart-total">{{products_of_cart.length}}</span> ) sản phẩm
                     </span>
                   </router-link>
-                  <div class="cart-droplist d-none d-sm-block">
+                  <div class="cart-droplist" v-show="displayCartDetail">
                     <cart-mobile />
                   </div>
                 </li>
@@ -74,41 +79,27 @@
 </template>
 
 <script>
-import $ from "jquery";
+import { mapState, mapActions } from "vuex";
 import CartMobile from "@/components/user/Cart/CartMobile";
+import { getCart as getMyCart } from "@/api/home/checkoutServices";
 export default {
   name: "HeaderContainer",
   components: { CartMobile },
-  mounted() {
-    this.$nextTick(() => {
-      this.slideEffectAjax();
-    });
+  created() {
+    this.getCart(getMyCart().data);
+  },
+  data() {
+    return {
+      displayCartDetail: false
+    };
+  },
+  computed: {
+    ...mapState("cart", ["products_of_cart"])
   },
   methods: {
-    slideEffectAjax() {
-      var ww = $(window).width();
-      if (ww > 767) {
-        $(".cart-total").mouseenter(function() {
-          $(this)
-            .find(".cart-droplist__content")
-            .stop(true, true)
-            .slideDown();
-        });
-
-        $(".cart-total").mouseleave(function() {
-          $(this)
-            .find(".cart-droplist__content")
-            .stop(true, true)
-            .slideUp();
-        });
-      } else {
-        $(".cart-total").click(function() {
-          $(this)
-            .find(".cart-droplist__content")
-            .slideToggle(300);
-        });
-      }
-    }
+    ...mapActions({
+      getCart: "cart/getCart"
+    })
   }
 };
 </script>

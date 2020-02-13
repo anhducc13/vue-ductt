@@ -2,11 +2,11 @@
   <div class="cart-droplist__content arrow_box">
     <div class="cart-droplist__status">
       <i class="fa fa-check" aria-hidden="true"></i>
-      <span class="cart-counter-list">2</span> Sản phẩm trong giỏ hàng
+      <span class="cart-counter-list">{{products_of_cart.length}}</span> Sản phẩm trong giỏ hàng
     </div>
     <div class="mini-list">
       <ul class="list-item-cart">
-        <li class="item" v-for="item in list" :key="item.id">
+        <li class="item" v-for="item in products_of_cart" :key="item.id">
           <product-image :alt="item.name" :src="item.images[0]" :url="item.url" />
           <div class="detail-item">
             <div class="product-details">
@@ -24,7 +24,7 @@
       </ul>
       <div class="top-subtotal">
         Tổng cộng:
-        <span class="price total-price">266.200₫</span>
+        <span class="price total-price">{{price(sub_total)}}₫</span>
       </div>
       <div class="actions">
         <button
@@ -52,22 +52,24 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import ProductName from "../ProductName";
 import ProductImage from "../ProductImage";
 import ProductQuantity from "../ProductQuantity";
 import IconRemove from "../IconRemove";
+import { numberWithDots } from "@/utils/display";
 export default {
   components: { ProductName, ProductImage, ProductQuantity, IconRemove },
   props: {
-    list: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
     backToHome: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    ...mapState("cart", ["products_of_cart", "sub_total"]),
+    price() {
+      return p => `${numberWithDots(p)}`;
     }
   }
 };

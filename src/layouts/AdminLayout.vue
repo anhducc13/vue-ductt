@@ -19,7 +19,9 @@
     <a-layout>
       <global-header :menuData="menuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse" />
       <a-layout-content :style="{minHeight: minHeight, margin: '24px 24px 0'}">
-        <slot></slot>
+        <a-spin :spinning="loading">
+          <slot></slot>
+        </a-spin>
       </a-layout-content>
       <a-layout-footer style="padding: 0px">
         <global-footer :link-list="footerLinks" :copyright="copyright" />
@@ -52,7 +54,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isMobile", "theme", "layout", "footerLinks", "copyright"])
+    ...mapGetters([
+      "isMobile",
+      "theme",
+      "layout",
+      "footerLinks",
+      "copyright",
+      "loading"
+    ])
   },
   methods: {
     toggleCollapse() {

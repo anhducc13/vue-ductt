@@ -1,8 +1,7 @@
 // import request from "@/utils/request";
 
 export function login(data) {
-  console.log(data)
-  return new Promise((res) => {
+  return new Promise(res => {
     res({
       data: {
         token: "ductt",
@@ -21,7 +20,6 @@ export function login(data) {
 }
 
 export function getInfo(token) {
-  console.log(token);
   return new Promise(res => {
     res({
       data: {
@@ -29,7 +27,7 @@ export function getInfo(token) {
         admin: true,
         name: "Ductt",
         avatar:
-          "https://iczer.gitee.io/vue-antd-pro/static/img/vue-antd-logo.png",
+          "https://iczer.gitee.io/vue-antd-pro/static/img/vue-antd-logo.png"
       }
     });
   });

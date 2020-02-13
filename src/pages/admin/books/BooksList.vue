@@ -1,52 +1,50 @@
 <template>
-  <a-spin :spinning="loading">
-    <a-card>
-      <div class="d-flex justify-content-between" slot="title">
-        <h4>Danh sách sách</h4>
-        <a-button type="primary" @click="() => { $router.push({path: '/admin/books/new'})}">
-          <a-icon type="plus" />Thêm sách
-        </a-button>
-      </div>
-      <a-table
-        rowKey="id"
-        :columns="columns"
-        :dataSource="listBooks.results"
-        bordered
-        @change="handleTableChange"
-        :pagination="{
+  <a-card>
+    <div class="d-flex justify-content-between" slot="title">
+      <h4>Danh sách sách</h4>
+      <a-button type="primary" @click="() => { $router.push({path: '/admin/books/new'})}">
+        <a-icon type="plus" />Thêm sách
+      </a-button>
+    </div>
+    <a-table
+      rowKey="id"
+      :columns="columns"
+      :dataSource="listBooks.results"
+      bordered
+      @change="handleTableChange"
+      :pagination="{
         current: filters.page,
         pageSize: filters.page_size,
         showQuickJumper: true,
         showSizeChanger: true,
         pageSizeOptions: ['5', '10', '15', '20', '50', '100'],
       }"
-      >
-        <template slot="title">
-          <a-input-search
-            size="large"
-            placeholder="Tìm kiếm theo tên"
-            @search="onSearch"
-            :maxLength="255"
-            v-model="filters.q"
-          />
-        </template>
-        <span slot="parent" slot-scope="parent">{{showParent(parent)}}</span>
-        <span slot="status" slot-scope="status">
-          <a-tag v-if="status" color="green">
-            <strong>HIỆU LỰC</strong>
-          </a-tag>
-          <a-tag v-else color="red">
-            <strong>VÔ HIỆU</strong>
-          </a-tag>
-        </span>
-        <span slot="action" slot-scope="text, record">
-          <router-link :to="`/admin/categories/${record.id}/edit`">Chỉnh sửa</router-link>
-          <a-divider type="vertical" />
-          <a-button size="small" type="link">Xóa</a-button>
-        </span>
-      </a-table>
-    </a-card>
-  </a-spin>
+    >
+      <template slot="title">
+        <a-input-search
+          size="large"
+          placeholder="Tìm kiếm theo tên"
+          @search="onSearch"
+          :maxLength="255"
+          v-model="filters.q"
+        />
+      </template>
+      <span slot="parent" slot-scope="parent">{{showParent(parent)}}</span>
+      <span slot="status" slot-scope="status">
+        <a-tag v-if="status" color="green">
+          <strong>HIỆU LỰC</strong>
+        </a-tag>
+        <a-tag v-else color="red">
+          <strong>VÔ HIỆU</strong>
+        </a-tag>
+      </span>
+      <span slot="action" slot-scope="text, record">
+        <router-link :to="`/admin/categories/${record.id}/edit`">Chỉnh sửa</router-link>
+        <a-divider type="vertical" />
+        <a-button size="small" type="link">Xóa</a-button>
+      </span>
+    </a-table>
+  </a-card>
 </template>
 <script>
 import { fetchBooksList } from "@/api/books";
@@ -118,8 +116,7 @@ export default {
         total_items: 0,
         results: []
       },
-      columns,
-      loading: false,
+      columns
     };
   },
   mounted() {
@@ -127,14 +124,11 @@ export default {
   },
   methods: {
     async fetchList(params) {
-      this.loading = true;
       try {
         const { data } = await fetchBooksList(cleanRequestBody(params));
         this.listBooks = data;
       } catch {
         //
-      } finally {
-        this.loading = false;
       }
     },
     handleTableChange(pagination, filters, sorter) {

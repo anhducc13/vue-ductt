@@ -1,29 +1,13 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <div id="field_slideshow" class="slideshow col-xs-12 col-sm-12 col-md-9">
+      <div v-if="list.length" id="field_slideshow" class="slideshow col-xs-12 col-sm-12 col-md-9">
         <div class="slidehow_main module-home">
           <div class="slidehow_owl owl-carousel owl-theme">
-            <div class="item">
-              <a href="http://ieltslistening.alphabooks.vn/">
-                <img
-                  src="https://bizweb.dktcdn.net/100/197/269/themes/739166/assets/slider-re2.jpg?1581054730300"
-                />
-              </a>
-            </div>
-            <div class="item">
-              <a href="triet-ly-lanh-dao-park-hang-seo.html">
-                <img
-                  src="https://bizweb.dktcdn.net/100/197/269/themes/739166/assets/slider-re1.jpg?1581054730300"
-                />
-              </a>
-            </div>
-            <div class="item">
-              <a href="top-7-cuon-sach-ve-nghe-thuat-lanh-dao-cua-john-maxwell.html">
-                <img
-                  src="https://bizweb.dktcdn.net/100/197/269/themes/739166/assets/slider-re4.jpg?1581054730300"
-                />
-              </a>
+            <div class="item" v-for="item in list" :key="item.id">
+              <router-link :to="to(item.url, item.type)" :title="item.name">
+                <img :src="item.images[0]" :alt="item.name" />
+              </router-link>
             </div>
           </div>
         </div>
@@ -37,6 +21,28 @@ import $ from "jquery";
 export default {
   name: "Slideshow",
   components: {},
+  props: {
+    list: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
+  },
+  computed: {
+    to() {
+      return (url, type) => {
+        switch (type) {
+          case "product":
+            return `/san-pham/${url}`;
+          case "news":
+            return `/bai-viet/${url}`;
+          default:
+            return "#";
+        }
+      };
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this.installOwlCarousel();
@@ -55,6 +61,13 @@ export default {
           "<a class='flex-prev-slideshow'><i class='fa fa-angle-left'></i></a>",
           "<a class='flex-next-slideshow'><i class='fa fa-angle-right'></i></a>"
         ]
+      });
+    }
+  },
+  watch: {
+    list() {
+      this.$nextTick(() => {
+        this.installOwlCarousel();
       });
     }
   }

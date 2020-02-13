@@ -3835,7 +3835,6 @@ iframe[name^="google_conversion_frame"] {
 }
 
 .cart-droplist__content {
-  display: none;
   width: 300px;
   position: absolute;
   background: #fff;

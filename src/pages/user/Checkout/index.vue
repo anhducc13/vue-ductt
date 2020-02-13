@@ -1,6 +1,6 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <a-form @submit.prevent="handleSubmit(() => {})">
+    <a-form @submit.prevent="handleSubmit(checkoutOrder)">
       <div class="content">
         <div class="banner">
           <div class="wrap">
@@ -111,7 +111,7 @@
                         </router-link>-->
                       </div>
                     </div>
-                    <div class="section__content">
+                    <!-- <div class="section__content">
                       <validation-provider rules="email" v-slot="{ errors }">
                         <a-form-item
                           label="Email"
@@ -208,11 +208,11 @@
                       <a-form-item label="Ghi chú">
                         <a-textarea placeholder="Nhập ghi chú" :rows="3" v-model="buyerInfo.note" />
                       </a-form-item>
-                    </div>
+                    </div>-->
                   </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
-                  <div v-if="otherReceived" class="mt-3 mt-lg-0">
+                  <!-- <div v-if="otherReceived" class="mt-3 mt-lg-0">
                     <div class="section__header">
                       <h2 class="section__title">
                         <i
@@ -329,7 +329,7 @@
                     <a-form-item label="Địa chỉ chi tiết">
                       <a-input placeholder="Nhập địa chỉ" v-model="receiverInfo.address" />
                     </a-form-item>
-                  </div>
+                  </div>-->
                   <shipping-method
                     v-if="shippingMethod.config && shippingMethod.config.fee"
                     :shippingMethod="shippingMethod"
@@ -364,6 +364,7 @@
 import PaymentMethod from "@/components/user/Checkout/PaymentMethod";
 import ShippingMethod from "@/components/user/Checkout/ShippingMethod";
 import ProductTable from "@/components/user/Checkout/ProductTable";
+import { checkout } from "@/utils/checkout";
 export default {
   components: { PaymentMethod, ShippingMethod, ProductTable },
   data() {
@@ -400,6 +401,11 @@ export default {
         address: ""
       }
     };
+  },
+  methods: {
+    checkoutOrder() {
+      checkout();
+    }
   },
   watch: {
     "buyerInfo.city_id": {

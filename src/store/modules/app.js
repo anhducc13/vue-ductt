@@ -11,21 +11,22 @@ const state = {
     { link: "https://github.com/anhducc13", icon: "github" },
     { link: "https://ant.design", name: "Ant Design" }
   ],
-  multipage: true
+  multipage: true,
+  loading: false
 };
 
 const mutations = {
   SET_DEVICE: (state, isMobile) => {
-      state.isMobile = isMobile
+    state.isMobile = isMobile;
   },
   SET_THEME: (state, theme) => {
-    state.theme = theme
+    state.theme = theme;
   },
   SET_LAYOUT: (state, layout) => {
-    state.layout = layout
+    state.layout = layout;
   },
   SET_MULTIPAGE: (state, multipage) => {
-    state.multipage = multipage
+    state.multipage = multipage;
   },
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened;
@@ -47,6 +48,9 @@ const mutations = {
   SET_SIZE: (state, size) => {
     state.size = size;
     Cookies.set("size", size);
+  },
+  SET_LOADING: (state, newLoading) => {
+    state.loading = newLoading;
   }
 };
 
@@ -63,6 +67,9 @@ const actions = {
   setMultiPage({ commit }, multipage) {
     commit("SET_MULTIPAGE", multipage);
   },
+  setLoading({ commit }, loading) {
+    commit("SET_LOADING", loading);
+  }
 };
 
 export default {

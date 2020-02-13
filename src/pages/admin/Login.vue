@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "Login",
   components: {},
@@ -108,21 +109,21 @@ export default {
         username: "",
         password: "",
         rememberMe: true
-      },
-      loading: false
+      }
     };
   },
   mounted() {
-    console.log(this.$router);
     if (this.formData.username.trim() === "") {
       this.$refs.username.focus();
     } else if (this.formData.password.trim() === "") {
       this.$refs.password.focus();
     }
   },
+  computed: {
+    ...mapGetters(["loading"])
+  },
   methods: {
     onSubmit() {
-      this.loading = true;
       this.$store
         .dispatch("user/login", { ...this.formData, loginAdmin: true })
         .then(() => {
@@ -132,10 +133,9 @@ export default {
           } else {
             this.$router.push({ path: "/admin" });
           }
-          this.loading = false;
         })
         .catch(() => {
-          this.loading = false;
+          //
         });
     }
   }

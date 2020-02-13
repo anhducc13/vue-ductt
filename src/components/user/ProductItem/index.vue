@@ -4,7 +4,9 @@
       <div class="laster-thumb">
         <div class="b-prices-reduc">
           <div class="prices-reduc">
-            <span class="price-percent-reduction">-10%</span>
+            <span
+              class="price-percent-reduction"
+            >-{{ priceReducion(item.root_price, item.sale_price) }}%</span>
           </div>
         </div>
 
@@ -24,18 +26,18 @@
       <div class="right-block clearfix">
         <div class="left_cnt_product">
           <h3>
-            <a
-              href="hbr-onpoint-boxset-9-cuon.html"
-              title="HBR ONPOINT BOXSET (9 cuốn)"
-            >{{item.name}}</a>
+            <router-link
+              :to="`/san-pham/${item.url}`"
+              :title="item.name"
+            >{{ name(item.short_name) }}</router-link>
           </h3>
           <div class="product-price">
             <span class="price-sale clearfix">
-              <small>{{item.sale_price}}₫</small>
+              <small>{{ price(item.sale_price) }}₫</small>
             </span>
 
             <span class="price-regular">
-              <small>{{item.root_price}}₫</small>
+              <small>{{ price(item.root_price) }}₫</small>
             </span>
           </div>
         </div>
@@ -45,12 +47,24 @@
 </template>
 
 <script>
+import { numberWithDots, shortText } from "@/utils/display";
 export default {
   name: "ProductItem",
   props: {
     item: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    priceReducion() {
+      return (root, sale) => `${Math.floor(((root - sale) / root) * 100)}`;
+    },
+    price() {
+      return p => `${numberWithDots(p)}`;
+    },
+    name() {
+      return n => (n === shortText(n) ? n : `${shortText(n)} ...`);
     }
   }
 };

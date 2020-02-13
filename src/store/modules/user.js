@@ -9,7 +9,7 @@ const state = {
   name: "",
   avatar: "",
   introduction: "",
-  admin: null,
+  admin: null
 };
 
 const mutations = {
@@ -94,7 +94,6 @@ const actions = {
 
   // user logout
   logout({ commit, state }) {
-    console.log("asdfsdf")
     return new Promise((resolve, reject) => {
       logout(state.token)
         .then(() => {
@@ -137,7 +136,7 @@ const actions = {
 
       // generate accessible routes map based on roles
       // const accessRoutes = await dispatch("permission/generateRoutes", roles, {
-        // root: true
+      // root: true
       // });
 
       // dynamically add accessible routes

@@ -14,6 +14,7 @@ const getters = {
   copyright: state => state.app.copyright,
   footerLinks: state => state.app.footerLinks,
   multipage: state => state.app.multipage,
-  extraData: state => state.extra.extraData
+  extraData: state => state.extra.extraData,
+  loading: state => state.app.loading
 };
 export default getters;

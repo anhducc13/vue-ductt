@@ -15,16 +15,16 @@
           <div style="width: 7%">Xóa</div>
         </div>
         <div class="cart-tbody">
-          <div class="item-cart">
+          <div v-for="item in products_of_cart" :key="item.id" class="item-cart">
             <div style="width: 18%" class="image">
-              <product-image />
+              <product-image :alt="item.name" :src="item.images[0]" :url="item.url" />
             </div>
             <div style="width: 31%" class="a-left">
-              <product-name />
+              <product-name :name="item.name" :url="item.url" />
             </div>
             <div style="width: 15%" class="a-right">
               <span class="item-price">
-                <span class="price">87.200₫</span>
+                <span class="price">{{price(item.sale_price)}}₫</span>
               </span>
             </div>
             <div style="width: 14%" class="a-center">
@@ -32,31 +32,7 @@
             </div>
             <div style="width: 15%" class="a-center">
               <span class="cart-price">
-                <span class="price">87.200₫</span>
-              </span>
-            </div>
-            <div style="width: 7%">
-              <icon-remove />
-            </div>
-          </div>
-          <div class="item-cart">
-            <div style="width: 18%" class="image">
-              <product-image />
-            </div>
-            <div style="width: 31%" class="a-left">
-              <product-name />
-            </div>
-            <div style="width: 15%" class="a-right">
-              <span class="item-price">
-                <span class="price">87.200₫</span>
-              </span>
-            </div>
-            <div style="width: 14%" class="a-center">
-              <product-quantity />
-            </div>
-            <div style="width: 15%" class="a-center">
-              <span class="cart-price">
-                <span class="price">87.200₫</span>
+                <span class="price">{{price(item.total_price)}}₫</span>
               </span>
             </div>
             <div style="width: 7%">
@@ -82,7 +58,7 @@
                 </td>
                 <td class="a-right">
                   <strong>
-                    <span class="price">266.200₫</span>
+                    <span class="price">{{price(sub_total)}}₫</span>
                   </strong>
                 </td>
               </tr>
@@ -94,7 +70,7 @@
                 class="button btn-proceed-checkout"
                 title="Tiến hành đặt hàng"
                 type="button"
-                @click="() => $router.push({ path: '/thanh-toan' })"
+                @click="toCheckout"
               >
                 <span>Tiến hành đặt hàng</span>
               </button>
@@ -119,12 +95,30 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { numberWithDots } from "@/utils/display";
+import { message } from "ant-design-vue";
 import ProductName from "../ProductName";
 import ProductImage from "../ProductImage";
 import ProductQuantity from "../ProductQuantity";
 import IconRemove from "../IconRemove";
 export default {
-  components: { ProductName, ProductImage, ProductQuantity, IconRemove }
+  components: { ProductName, ProductImage, ProductQuantity, IconRemove },
+  computed: {
+    ...mapState("cart", ["products_of_cart", "sub_total"]),
+    price() {
+      return p => `${numberWithDots(p)}`;
+    }
+  },
+  methods: {
+    toCheckout() {
+      if (this.products_of_cart.length) {
+        this.$router.push({ path: "/thanh-toan" });
+      } else {
+        message.warning("Không có sản phẩm nào trong giỏ hàng để thanh toán");
+      }
+    }
+  }
 };
 </script>
 
