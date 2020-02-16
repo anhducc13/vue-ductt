@@ -25,8 +25,11 @@ const router = new Router({
     {
       path: "/404",
       component: () => import("@/pages/shared/404.vue")
-    },
-  ]
+    }
+  ],
+  scrollBehavior() {
+    return { x: 0, y: 0 };
+  }
 });
 
 export default router;

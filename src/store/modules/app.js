@@ -12,7 +12,8 @@ const state = {
     { link: "https://ant.design", name: "Ant Design" }
   ],
   multipage: true,
-  loading: false
+  loading: false,
+  collapsed: Cookies.get("sidebarStatus") === "1"
 };
 
 const mutations = {
@@ -28,19 +29,13 @@ const mutations = {
   SET_MULTIPAGE: (state, multipage) => {
     state.multipage = multipage;
   },
-  TOGGLE_SIDEBAR: state => {
-    state.sidebar.opened = !state.sidebar.opened;
-    state.sidebar.withoutAnimation = false;
-    if (state.sidebar.opened) {
+  TOGGLE_SIDEBAR: (state, collapsed) => {
+    state.collapsed = collapsed;
+    if (state.collapsed) {
       Cookies.set("sidebarStatus", 1);
     } else {
       Cookies.set("sidebarStatus", 0);
     }
-  },
-  CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set("sidebarStatus", 0);
-    state.sidebar.opened = false;
-    state.sidebar.withoutAnimation = withoutAnimation;
   },
   TOGGLE_DEVICE: (state, device) => {
     state.device = device;
@@ -69,6 +64,9 @@ const actions = {
   },
   setLoading({ commit }, loading) {
     commit("SET_LOADING", loading);
+  },
+  setCollapsed({ commit }, collapsed) {
+    commit("TOGGLE_SIDEBAR", collapsed);
   }
 };
 

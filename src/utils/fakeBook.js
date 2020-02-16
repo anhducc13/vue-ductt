@@ -4,11 +4,13 @@ import slugify from "slugify";
 
 export const generateBook = () => {
   const id = faker.random.number(1000);
-  const name = faker.random.words(15);
+  const name = faker.random.words(5);
   const price = faker.random.number(1000000);
   const res = {
     id,
     short_name: name,
+    description: faker.lorem.paragraphs(),
+    status: ["Còn hàng", "Sắp bán", "Hết hàng", "Ngừng bán"][faker.random.number() % 2],
     name,
     url: slugify(name),
     images: [1, 2, 3].map(() => `https://i.picsum.photos/id/${id}/200/300.jpg`),
@@ -18,6 +20,14 @@ export const generateBook = () => {
   return res;
 };
 
+export const getDetailBook = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve({ results: generateBook() });
+    }, 500);
+  });
+}
+
 export const generateListBook = (number = 10) => {
   const res = [...Array(number).keys()].map(() => {
     const item = generateBook();
@@ -26,14 +36,14 @@ export const generateListBook = (number = 10) => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve({ results: res });
-    }, 1000);
+    }, 500);
   });
 };
 
 export const gennerateListBanner = (number = 3) => {
   const res = [...Array(number).keys()].map(() => {
     const id = faker.random.number(1000);
-    const name = faker.random.words(15);
+    const name = faker.random.words(5);
     const item = {
       id,
       name,
@@ -48,6 +58,6 @@ export const gennerateListBanner = (number = 3) => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve({ results: res });
-    }, 1000);
+    }, 500);
   });
 };

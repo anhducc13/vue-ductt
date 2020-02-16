@@ -79,16 +79,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 import CartMobile from "@/components/user/Cart/CartMobile";
 import CartModal from "@/components/user/Cart/CartModal";
-import { getCart as getMyCart } from "@/api/home/checkoutServices";
 export default {
   name: "HeaderContainer",
   components: { CartMobile, CartModal },
-  created() {
-    this.getCart(getMyCart().data);
-  },
   data() {
     return {
       displayCartDetail: false
@@ -97,11 +93,6 @@ export default {
   computed: {
     ...mapState("cart", ["products_of_cart"])
   },
-  methods: {
-    ...mapActions({
-      getCart: "cart/getCart"
-    })
-  }
 };
 </script>
 

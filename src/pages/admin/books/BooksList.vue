@@ -39,7 +39,7 @@
         </a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
-        <router-link :to="`/admin/categories/${record.id}/edit`">Chỉnh sửa</router-link>
+        <router-link :to="`/admin/books/${record.id}/edit`">Chỉnh sửa</router-link>
         <a-divider type="vertical" />
         <a-button size="small" type="link">Xóa</a-button>
       </span>

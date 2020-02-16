@@ -4,7 +4,6 @@
       <sider-menu
         :theme="theme"
         :menuData="menuData"
-        :collapsed="false"
         :collapsible="false"
         @menuSelect="onMenuSelect"
       />
@@ -13,11 +12,10 @@
       :theme="theme"
       v-else-if="layout === 'side'"
       :menuData="menuData"
-      :collapsed="collapsed"
       :collapsible="true"
     />
     <a-layout>
-      <global-header :menuData="menuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse" />
+      <global-header :menuData="menuData" />
       <a-layout-content :style="{minHeight: minHeight, margin: '24px 24px 0'}">
         <a-spin :spinning="loading">
           <slot></slot>
@@ -48,7 +46,6 @@ export default {
   data() {
     return {
       minHeight: minHeight + "px",
-      collapsed: false,
       menuData: menuData,
       showSetting: false
     };
@@ -60,13 +57,11 @@ export default {
       "layout",
       "footerLinks",
       "copyright",
-      "loading"
+      "loading",
+      "collapsed"
     ])
   },
   methods: {
-    toggleCollapse() {
-      this.collapsed = !this.collapsed;
-    },
     onDrawerChange(show) {
       this.collapsed = show;
     },

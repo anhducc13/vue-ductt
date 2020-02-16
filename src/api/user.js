@@ -8,7 +8,7 @@ export function login(data) {
         admin: true,
         name: "Ductt",
         avatar:
-          "https://iczer.gitee.io/vue-antd-pro/static/img/vue-antd-logo.png"
+          "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
       }
     });
   });
@@ -27,7 +27,7 @@ export function getInfo(token) {
         admin: true,
         name: "Ductt",
         avatar:
-          "https://iczer.gitee.io/vue-antd-pro/static/img/vue-antd-logo.png"
+          "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
       }
     });
   });

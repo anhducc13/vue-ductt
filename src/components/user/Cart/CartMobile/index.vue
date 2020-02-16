@@ -7,16 +7,16 @@
     <div class="mini-list">
       <ul class="list-item-cart">
         <li class="item" v-for="item in products_of_cart" :key="item.id">
-          <product-image :alt="item.name" :src="item.images[0]" :url="item.url" />
+          <product-image :alt="name(item.name)" :src="item.images[0]" :url="item.url" />
           <div class="detail-item">
             <div class="product-details">
-              <icon-remove />
-              <product-name :name="item.name" :url="item.url" />
+              <icon-remove :pId="item.id" />
+              <product-name :name="name(item.name)" :url="item.url" />
             </div>
             <div class="product-details-bottom">
-              <span class="price">{{item.sale_price}}₫</span>
+              <span class="price">{{price(item.total_price)}}₫</span>
               <div class="quantity-select">
-                <product-quantity />
+                <product-quantity :item="item" />
               </div>
             </div>
           </div>
@@ -58,7 +58,7 @@ import ProductName from "../ProductName";
 import ProductImage from "../ProductImage";
 import ProductQuantity from "../ProductQuantity";
 import IconRemove from "../IconRemove";
-import { numberWithDots } from "@/utils/display";
+import { numberWithDots, shortText } from "@/utils/display";
 export default {
   components: { ProductName, ProductImage, ProductQuantity, IconRemove },
   props: {
@@ -71,6 +71,9 @@ export default {
     ...mapState("cart", ["products_of_cart", "sub_total"]),
     price() {
       return p => `${numberWithDots(p)}`;
+    },
+    name() {
+      return n => (n === shortText(n) ? n : `${shortText(n)} ...`);
     }
   },
   methods: {

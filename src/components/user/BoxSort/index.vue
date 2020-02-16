@@ -9,10 +9,9 @@
               <div class="orderby-wrapper">
                 <select
                   name="sortBy"
-                  id="sortBy"
                   class="selectBox"
                   style="padding: 0px 10px; height: 30px;"
-                  v-model="sortBy"
+                  :value="selected"
                   @change="handleChange"
                 >
                   <option value="created-desc">Hàng mới nhất</option>
@@ -40,14 +39,16 @@ export default {
       default: "created-desc"
     },
   },
-  data() {
-    return {
-      sortBy: this.selected,
-    }
-  },
   methods: {
     handleChange(e) {
-      this.$emit('onChangeBoxSort', e.target.value);
+      const currRoute = this.$route;
+      this.$router.push({
+        ...currRoute,
+        query: {
+          ...currRoute.query,
+          sort: e.target.value,
+        }
+      })
     }
   }
 };

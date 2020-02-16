@@ -1,13 +1,65 @@
 <template>
   <div>
-    <button class="reduced items-count btn-minus" disabled type="button">–</button>
-    <input disabled type="text" min="0" class="input-text number-sidebar" value="1" />
-    <button class="increase items-count btn-plus" type="button">+</button>
+    <button class="reduced items-count btn-minus" type="button" @click="() => changeQty(-1)">–</button>
+    <input
+      type="text"
+      min="1"
+      step="1"
+      @keypress="onlyNumber"
+      class="input-text number-sidebar"
+      v-model="item.qty"
+      @change="emitChange"
+    />
+    <button class="increase items-count btn-plus" type="button" @click="() => changeQty(1)">+</button>
   </div>
 </template>
 
 <script>
-export default {};
+import { mapState, mapActions } from "vuex";
+import { updateCart, getCart as getMyCart } from "@/api/home/checkoutServices";
+export default {
+  props: {
+    item: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    ...mapState("cart", ["products_of_cart"]),
+  },
+  methods: {
+    ...mapActions({
+      getCart: "cart/getCart"
+    }),
+    changeQty(qty) {
+      if (this.item.qty === 1 && qty < 0) {
+        return false;
+      }
+      this.item.qty = parseInt(this.item.qty) + parseInt(qty);
+      this.emitChange();
+    },
+    emitChange() {
+      const newCartProds = this.products_of_cart.map(x => {
+        if (x.id === this.item.id) {
+          return {
+            ...x,
+            qty: this.item.qty
+          }
+        }
+        return x;
+      })
+      updateCart({ products: newCartProds });
+      this.getCart(getMyCart().data);
+    },
+    onlyNumber($event) {
+      let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+      if (keyCode < 48 || keyCode > 57 || keyCode == 46) {
+        // 46 is dot
+        $event.preventDefault();
+      }
+    }
+  }
+};
 </script>
 
 <style>

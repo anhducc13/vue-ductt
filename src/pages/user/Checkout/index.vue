@@ -26,17 +26,17 @@
           <div class="sidebar">
             <div class="sidebar_header">
               <h2>
-                <label class="control-label">Đơn hàng (2 sản phẩm)</label>
+                <label class="control-label">Đơn hàng ({{products_of_cart.length}} sản phẩm)</label>
               </h2>
               <hr class="full_width" />
             </div>
             <div class="sidebar__content">
-              <product-table :list="[]" />
+              <product-table :list="products_of_cart" />
               <div class="order-summary order-summary--total-lines">
                 <div class="summary-section border-top-none--mobile">
                   <div class="total-line total-line-subtotal clearfix">
                     <span class="total-line-name pull-left">Tạm tính</span>
-                    <span class="total-line-subprice pull-right">358.000₫</span>
+                    <span class="total-line-subprice pull-right">{{price(sub_total)}}₫</span>
                   </div>
                   <div class="total-line total-line-shipping clearfix" bind-show="requiresShipping">
                     <span class="total-line-name pull-left">Phí vận chuyển</span>
@@ -51,7 +51,7 @@
                   </div>
                   <div class="total-line total-line-total clearfix">
                     <span class="total-line-name pull-left">Tổng cộng</span>
-                    <span class="total-line-price pull-right">358.000₫</span>
+                    <span class="total-line-price pull-right">{{price(sub_total)}}₫</span>
                   </div>
                 </div>
               </div>
@@ -361,12 +361,18 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import PaymentMethod from "@/components/user/Checkout/PaymentMethod";
 import ShippingMethod from "@/components/user/Checkout/ShippingMethod";
 import ProductTable from "@/components/user/Checkout/ProductTable";
 import { checkout } from "@/utils/checkout";
+import { numberWithDots } from "@/utils/display";
+import { getCart as getMyCart } from "@/api/home/checkoutServices";
 export default {
   components: { PaymentMethod, ShippingMethod, ProductTable },
+  created() {
+    this.getCart(getMyCart().data);
+  },
   data() {
     return {
       otherReceived: false,
@@ -402,7 +408,16 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState("cart", ["products_of_cart", "sub_total"]),
+    price() {
+      return p => `${numberWithDots(p)}`;
+    },
+  },
   methods: {
+    ...mapActions({
+      getCart: "cart/getCart"
+    }),
     checkoutOrder() {
       checkout();
     }

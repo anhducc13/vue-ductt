@@ -56,13 +56,13 @@ export const nav = [
     ]
   },
   {
-    name: "Quản lý tác giả",
-    icon: "solution",
-    path: "/admin/authors"
+    name: "Quản lý đơn hàng",
+    icon: "shopping",
+    path: "/admin/orders/list"
   },
-  {
-    name: "Quản lý NXB",
-    icon: "printer",
-    path: "/admin/publishers"
-  }
+  // {
+  //   name: "Quản lý NXB",
+  //   icon: "printer",
+  //   path: "/admin/publishers"
+  // }
 ];

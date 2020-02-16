@@ -8,7 +8,7 @@
   >
     <div :class="['logo', theme]">
       <router-link to="/admin">
-        <img src="https://iczer.gitee.io/vue-antd-pro/static/img/vue-antd-logo.png" />
+        <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
         <h1>{{systemName}}</h1>
       </router-link>
     </div>
@@ -34,11 +34,6 @@ export default {
       required: false,
       default: false
     },
-    collapsed: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
     menuData: {
       type: Array,
       required: true
@@ -50,7 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["isMobile", "systemName"])
+    ...mapGetters(["isMobile", "systemName", "collapsed"])
   },
   methods: {
     onSelect(obj) {

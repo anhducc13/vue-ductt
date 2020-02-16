@@ -68,39 +68,9 @@
                   :style="{width: '100%'}"
                   optionFilterProp="children"
                   :filterOption="filterOption"
-                  v-model="formData.category_id"
+                  v-model="formData.category_ids"
                 >
                   <a-select-option v-for="c in categories" :key="c.id">{{c.name}}</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :lg="{ span: 12}">
-              <a-form-item label="NXB">
-                <a-select
-                  allowClear
-                  showSearch
-                  placeholder="Chọn NXB"
-                  :style="{width: '100%'}"
-                  optionFilterProp="children"
-                  :filterOption="filterOption"
-                  v-model="formData.publisher_id"
-                >
-                  <a-select-option v-for="p in publishers" :key="p.id">{{p.name}}</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :lg="{ span: 12}">
-              <a-form-item label="Tác giả">
-                <a-select
-                  allowClear
-                  mode="multiple"
-                  placeholder="Chọn tác giả"
-                  :style="{width: '100%'}"
-                  optionFilterProp="children"
-                  :filterOption="filterOption"
-                  v-model="formData.author_ids"
-                >
-                  <a-select-option v-for="a in authors" :key="a.id">{{a.name}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -126,36 +96,11 @@
             </a-col>
             <a-col :lg="{ span: 24}">
               <a-form-item label="Mô tả sách">
-                <markdown-editor v-model="formData.description" />
-              </a-form-item>
-            </a-col>
-            <a-col :lg="{ span: 12}">
-              <a-form-item label="Ngày phát hành">
-                <a-date-picker :style="{ width: '100%'}" v-model="formData.release_date" />
-              </a-form-item>
-            </a-col>
-            <a-col :lg="{ span: 12}">
-              <a-form-item label="Số trang">
-                <a-input-number
-                  placeholder="Nhập số trang"
-                  :style="{ width: '100%'}"
-                  :min="1"
-                  v-model="formData.number_of_pages"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :lg="{ span: 12}">
-              <a-form-item label="Kích thước (VD: 21 x 14 hoặc 21 x 14 x 2.5 )">
-                <a-input placeholder="Nhập kích thước" :maxLength="255" v-model="formData.size" />
-              </a-form-item>
-            </a-col>
-            <a-col :lg="{ span: 12}">
-              <a-form-item label="Cân nặng (gam)">
-                <a-input-number
-                  placeholder="Nhập cân nặng"
-                  :style="{ width: '100%'}"
-                  :min="1"
-                  v-model="formData.weight"
+                <vue-editor
+                  v-model="formData.description"
+                  useCustomImageHandler
+                  @image-added="handleImageAdded"
+                  :disabled="loadingUploadImage"
                 />
               </a-form-item>
             </a-col>
@@ -211,24 +156,20 @@
             <a-divider>
               <h4>Thông tin sale</h4>
             </a-divider>
-            <a-col :md="{ span: 8}">
+            <a-col :lg="{ span: 8}">
               <a-form-item label="Giá nhập (VNĐ)">
                 <a-input-number
                   placeholder="Nhập giá"
-                  :formatter="value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                  :parser="value => value.replace(/\$\s?|(,*)/g, '')"
                   :style="{ width: '100%'}"
                   :min="0"
                   v-model="formData.import_price"
                 />
               </a-form-item>
             </a-col>
-            <a-col :md="{ span: 8}">
+            <a-col :lg="{ span: 8}">
               <a-form-item label="Giá bìa (VNĐ)">
                 <a-input-number
                   placeholder="Nhập giá"
-                  :formatter="value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                  :parser="value => value.replace(/\$\s?|(,*)/g, '')"
                   decimalSeparator=","
                   :style="{ width: '100%'}"
                   :min="0"
@@ -236,12 +177,10 @@
                 />
               </a-form-item>
             </a-col>
-            <a-col :md="{ span: 8}">
+            <a-col :lg="{ span: 8}">
               <a-form-item label="Giá bán (VNĐ)">
                 <a-input-number
                   placeholder="Nhập giá"
-                  :formatter="value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                  :parser="value => value.replace(/\$\s?|(,*)/g, '')"
                   decimalSeparator=","
                   :style="{ width: '100%'}"
                   :min="0"
@@ -310,7 +249,7 @@
             </a-col>
             <a-col :span="24">
               <a-form-item>
-                <a-button :loading="loading" htmlType="submit" type="primary">Lưu sách</a-button>
+                <a-button htmlType="submit" type="primary">Lưu sách</a-button>
               </a-form-item>
             </a-col>
           </a-form>
@@ -321,27 +260,24 @@
 </template>
 <script>
 import firebase from "firebase";
-import MarkdownEditor from "@/components/shared/MarkdownEditor";
+import { VueEditor } from "vue2-editor";
 import { mapGetters } from "vuex";
 import { message, notification } from "ant-design-vue";
-import { addBook } from "@/api/books";
+import { addBook, fetchBook, editBook } from "@/api/books";
 import { cleanRequestBody } from "@/utils/common";
-import { generateNameFromTime } from "@/utils/common";
+import { generateName } from "@/utils/common";
 import { SALE_STATUS } from "@/constants/products";
+import imageVueEditor from "@/mixins/imageVueEditor";
+import moment from "moment";
 
 const defaultFormdata = {
   short_name: "",
   name: "",
-  category_id: undefined,
-  publisher_id: undefined,
-  author_ids: [],
+  category_ids: [],
   is_active: false,
   short_description: "",
   description: "",
   release_date: null,
-  number_of_page: null,
-  size: "",
-  weight: null,
   sale_status: SALE_STATUS.AVAILABLE.key,
   quantity_in_stock: null,
   on_sale_date: null,
@@ -349,16 +285,15 @@ const defaultFormdata = {
   root_price: null,
   sale_price: null,
   images: [],
-  demo: null,
+  demo: null
 };
 
 export default {
   name: "BookNew",
-  components: { MarkdownEditor },
+  components: { VueEditor },
   data() {
     return {
       formData: { ...defaultFormdata },
-      loading: false,
       SALE_STATUS,
       upcomingStatus: SALE_STATUS.UPCOMING.key,
       outOfStockStatus: SALE_STATUS.OUTOFSTOCK.key,
@@ -370,37 +305,20 @@ export default {
       fileDemo: []
     };
   },
-  mounted: function() {
+  mixins: [imageVueEditor],
+  async mounted() {
     this.$store.dispatch("extra/fetchExtraData");
     if (this.isEditBook) {
-      this.formData = {
-        short_name: "dgdfgfg",
-        name: "dfgfdgdfdsfsd",
-        category_id: undefined,
-        publisher_id: undefined,
-        author_ids: [],
-        is_active: false,
-        short_description: "sdfdfdf",
-        description: "sdfdfds",
-        release_date: null,
-        number_of_page: null,
-        size: "sdfdsfsdf",
-        weight: null,
-        sale_status: SALE_STATUS.AVAILABLE.key,
-        quantity_in_stock: null,
-        on_sale_date: null,
-        import_price: null,
-        root_price: null,
-        sale_price: null,
-        images: ["http://dvhbooks.com/uploads/articles/MwPFtJR2PL.jpg"],
-        demo: "http://www.africau.edu/images/default/sample.pdf"
-      };
+      await this.fetchDetailBook();
     }
     this.fileListImage = this.formData.images.map(img => ({
       uid: img,
       name: img,
       status: "done",
-      url: img
+      url: img,
+      response: {
+        url: img
+      }
     }));
     if (this.formData.demo) {
       const { demo: file } = this.formData;
@@ -409,7 +327,10 @@ export default {
           uid: file,
           name: file,
           status: "done",
-          url: file
+          url: file,
+          response: {
+            url: file
+          }
         }
       ];
     }
@@ -420,20 +341,6 @@ export default {
       const { categories } = this.extraData;
       if (Array.isArray(categories)) {
         return categories;
-      }
-      return [];
-    },
-    publishers() {
-      const { publishers } = this.extraData;
-      if (Array.isArray(publishers)) {
-        return publishers;
-      }
-      return [];
-    },
-    authors() {
-      const { authors } = this.extraData;
-      if (Array.isArray(authors)) {
-        return authors;
       }
       return [];
     },
@@ -453,9 +360,26 @@ export default {
     },
     isEditBook: function() {
       return !!this.$route.params.id;
-    },
+    }
   },
   methods: {
+    async fetchDetailBook() {
+      try {
+        const id = this.$route.params.id;
+        const { data } = await fetchBook(id);
+        this.formData = {
+          ...data,
+          short_description: data.short_description || "",
+          description: data.description || "",
+          category_ids: data.categories.map(c => c.id),
+          release_date: data.release_date ? moment(data.release_date) : null,
+          on_sale_date: data.on_sale_date ? moment(data.on_sale_date) : null,
+          images: data.images.map(c => c.url)
+        };
+      } catch {
+        //
+      }
+    },
     handleCancelPreviewImage() {
       this.previewVisible = false;
     },
@@ -465,6 +389,7 @@ export default {
     },
     handleChangeImage({ fileList }) {
       if (this.showImage) {
+        console.log(fileList);
         this.fileListImage = fileList;
         this.formData.images = fileList
           .filter(f => f.status === "done")
@@ -532,7 +457,7 @@ export default {
     uploadFile(folderName, { file, onProgress, onSuccess, onError }) {
       const storageRef = firebase
         .storage()
-        .ref(`${folderName}/${generateNameFromTime()}`)
+        .ref(`${folderName}/${generateName(file)}`)
         .put(file);
       storageRef.on(
         `state_changed`,
@@ -562,12 +487,17 @@ export default {
       this.uploadFile("images", { file, onProgress, onSuccess, onError });
     },
     async saveBook() {
-      this.loading = true;
       try {
         if (this.isEditBook) {
+          const id = this.$route.params.id;
+          await editBook(id, this.formData);
+          notification.success({
+            message: "Thành công",
+            description: "Chỉnh sửa thành công"
+          });
           this.$router.push({ path: "/admin/books/list" });
         } else {
-          const { data } = await addBook(cleanRequestBody(this.formData));
+          const { data } = await addBook(this.formData);
           notification.success({
             message: "Thành công",
             description: `Thêm mới thành công sách ${data.short_name}`
@@ -575,10 +505,8 @@ export default {
           this.$router.push({ path: "/admin/books/list" });
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
         //
-      } finally {
-        this.loading = false;
       }
     }
   },

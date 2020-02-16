@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import HeaderSearch from './HeaderSearch'
 import HeaderNotice from './HeaderNotice'
 import HeaderAvatar from './HeaderAvatar'
@@ -34,20 +34,24 @@ import IMenu from '@/components/shared/menu/menu'
 export default {
   name: 'GlobalHeader',
   components: {IMenu, HeaderAvatar, HeaderNotice, HeaderSearch},
-  props: ['collapsed', 'menuData'],
+  props: ['menuData'],
   computed: {
     ...mapGetters([
       'isMobile',
       'layout',
       'systemName',
+      'collapsed'
     ]),
     theme () {
       return this.$store.state.app.layout === 'side' ? 'light' : this.$store.state.app.theme
     }
   },
   methods: {
+    ...mapActions({
+      setCollapsed: "app/setCollapsed"
+    }),
     toggleCollapse () {
-      this.$emit('toggleCollapse')
+      this.setCollapsed(!this.collapsed);
     },
     onSelect (obj) {
       this.$emit('menuSelect', obj)

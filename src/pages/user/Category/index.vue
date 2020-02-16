@@ -1,38 +1,60 @@
 <template>
   <div class="mt-4">
-    <box-sort :selected="sortBy" v-on:onChangeBoxSort="handleChangeSortField" />
+    <box-sort :selected="filter.sortBy" />
     <product-list :list="listProducts" />
+    <div class="container mb-5 text-center">
+      <Pagination :current="filter.page" />
+    </div>
   </div>
 </template>
 
 <script>
-import BoxSort from '@/components/user/BoxSort';
-import ProductList from '@/components/user/ProductList';
+import BoxSort from "@/components/user/BoxSort";
+import Pagination from "@/components/user/Pagination";
+import ProductList from "@/components/user/ProductList";
 import getPageTitle from "@/utils/get-page-title";
+import { productServices } from "@/api/home";
 export default {
-  components: { BoxSort, ProductList },
+  components: { BoxSort, ProductList, Pagination },
   data() {
     return {
-      sortBy: 'created-desc',
+      filter: {
+        slug: this.$route.params.slug,
+        page: parseInt(this.$route.query.page || 1),
+        sortBy: this.$route.query.sort || "created-desc"
+      },
       listProducts: []
-    }
-  },
-  mounted() {
-    const slugCat = this.$route.params.slug;
-    this.getProductOfCat()
-    console.log(slugCat)
+    };
   },
   methods: {
-    async getProductOfCat() {
+    async getCategory() {
       document.title = getPageTitle("Văn học");
     },
-    handleChangeSortField(value) {
-      this.sortBy = value;
+    async getProductOfCat() {
+      const { results } = await productServices.getSaleCategory(this.filter);
+      this.listProducts = results;
+    },
+    changeState() {
+      this.filter = {
+        ...this.filter,
+        slug: this.$route.params.slug,
+        page: parseInt(this.$route.query.page || 1),
+        sortBy: this.$route.query.sort || "created-desc"
+      }
     }
+  },
+  watch: {
+    $route() {
+      this.getProductOfCat();
+      this.changeState()
+    }
+  },
+  created() {
+    this.getCategory();
+    this.getProductOfCat();
   }
-}
+};
 </script>
 
 <style>
-
 </style>

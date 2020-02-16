@@ -15,6 +15,7 @@ const getters = {
   footerLinks: state => state.app.footerLinks,
   multipage: state => state.app.multipage,
   extraData: state => state.extra.extraData,
-  loading: state => state.app.loading
+  loading: state => state.app.loading,
+  collapsed: state => state.app.collapsed,
 };
 export default getters;

@@ -7,20 +7,20 @@
           <div style="width: 31%">
             <span class="nobr">Tên sản phẩm</span>
           </div>
-          <div style="width: 15%" class="a-right">
+          <div style="width: 13%" class="a-right">
             <span class="nobr">Giá bán lẻ</span>
           </div>
           <div style="width: 14%" class="a-center">Số lượng</div>
           <div style="width: 15%" class="a-center">Tạm tính</div>
-          <div style="width: 7%">Xóa</div>
+          <div style="width: 9%">Xóa</div>
         </div>
         <div class="cart-tbody">
           <div v-for="item in products_of_cart" :key="item.id" class="item-cart">
             <div style="width: 18%" class="image">
-              <product-image :alt="item.name" :src="item.images[0]" :url="item.url" />
+              <product-image :alt="name(item.name)" :src="item.images[0]" :url="item.url" />
             </div>
             <div style="width: 31%" class="a-left">
-              <product-name :name="item.name" :url="item.url" />
+              <product-name :name="name(item.name)" :url="item.url" />
             </div>
             <div style="width: 15%" class="a-right">
               <span class="item-price">
@@ -28,7 +28,7 @@
               </span>
             </div>
             <div style="width: 14%" class="a-center">
-              <product-quantity />
+              <product-quantity :item="item" />
             </div>
             <div style="width: 15%" class="a-center">
               <span class="cart-price">
@@ -36,7 +36,7 @@
               </span>
             </div>
             <div style="width: 7%">
-              <icon-remove />
+              <icon-remove :pId="item.id" />
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { numberWithDots } from "@/utils/display";
+import { numberWithDots, shortText } from "@/utils/display";
 import { message } from "ant-design-vue";
 import ProductName from "../ProductName";
 import ProductImage from "../ProductImage";
@@ -108,6 +108,9 @@ export default {
     ...mapState("cart", ["products_of_cart", "sub_total"]),
     price() {
       return p => `${numberWithDots(p)}`;
+    },
+    name() {
+      return n => (n === shortText(n) ? n : `${shortText(n)} ...`);
     }
   },
   methods: {

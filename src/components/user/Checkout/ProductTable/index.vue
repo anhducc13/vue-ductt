@@ -13,13 +13,13 @@
                       class="product-thumbnail__image"
                     />
                   </div>
-                  <span class="product-thumbnail__quantity" aria-hidden="true">{{item.quantity}}</span>
+                  <span class="product-thumbnail__quantity" aria-hidden="true">{{item.qty}}</span>
                 </div>
               </td>
               <td class="product-info">
-                <span class="product-info-name">{{item.name}}</span>
+                <span class="product-info-name">{{name(item.name)}}</span>
               </td>
-              <td class="product-price text-right">{{item.sale_price}}₫</td>
+              <td class="product-price text-right">{{price(item.total_price)}}₫</td>
             </tr>
           </tbody>
         </table>
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { numberWithDots, shortText } from "@/utils/display";
 export default {
   props: {
     list: {
@@ -37,7 +38,15 @@ export default {
         return [];
       }
     }
-  }
+  },
+  computed: {
+    price() {
+      return p => `${numberWithDots(p)}`;
+    },
+    name() {
+      return n => (n === shortText(n) ? n : `${shortText(n)} ...`);
+    }
+  },
 };
 </script>
 

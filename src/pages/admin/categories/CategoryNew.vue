@@ -1,6 +1,6 @@
 <template>
   <a-row>
-    <a-col :md="{ span: 16, offset: 4 }">
+    <a-col :md="{ span: 24 }">
       <a-spin :spinning="loading">
         <a-card>
           <div class="d-flex justify-content-between" slot="title">
@@ -86,7 +86,12 @@
                   <a-switch v-model="formData.is_active" />
                 </a-form-item>
                 <a-form-item label="Mô tả danh mục">
-                  <markdown-editor v-model="formData.description" />
+                  <vue-editor
+                    v-model="formData.description"
+                    useCustomImageHandler
+                    @image-added="handleImageAdded"
+                    :disabled="loadingUploadImage"
+                  />
                 </a-form-item>
 
                 <a-form-item>
@@ -102,10 +107,11 @@
 </template>
 <script>
 import { notification } from "ant-design-vue";
-import MarkdownEditor from "@/components/shared/MarkdownEditor";
+import { VueEditor } from "vue2-editor";
 import { fetchCategory, editCategory, addCategory } from "@/api/categories";
 import { cleanRequestBody } from "@/utils/common";
 import { mapGetters } from "vuex";
+import imageVueEditor from "@/mixins/imageVueEditor";
 
 const defaultFormdata = {
   parent_id: undefined,
@@ -116,7 +122,8 @@ const defaultFormdata = {
 };
 export default {
   name: "CategoryNew",
-  components: { MarkdownEditor },
+  components: { VueEditor },
+  mixins: [imageVueEditor],
   data() {
     return {
       formData: { ...defaultFormdata },
@@ -148,7 +155,8 @@ export default {
       try {
         const id = this.$route.params.id;
         const { data } = await fetchCategory(id);
-        this.formData = data;
+        this.formData = {...data};
+        console.log(this.formData);
       } catch {
         //
       } finally {
@@ -163,6 +171,7 @@ export default {
       );
     },
     async saveCategory() {
+      console.log(this.formData);
       this.loading = true;
       try {
         if (this.isEditCategory) {

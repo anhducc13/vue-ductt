@@ -17,13 +17,17 @@ export const generateNameFromTime = () => {
   return Date.now().toString() + uuidv4();
 }
 
+export const generateName = (file) => {
+  const oldName = file.name;
+  return Date.now().toString() + "-" + oldName;
+}
+
 export const cleanRequestBody = (body) => {
   Object.keys(body).map(key => {
-    if (!body[key]) {
+    if (body[key] === null || body[key] === undefined) {
       delete body[key];
     }
     return key;
   })
-  console.log(body)
   return body;
 }

@@ -35,7 +35,7 @@ export default {
       sort: "alpha-desc"
     };
   },
-  async mounted() {
+  async created() {
     const { results: listSildeshow } = await getCustomData({
       code: CODE.BANNER
     });
@@ -53,7 +53,6 @@ export default {
     this.listBookNew = listBookNew;
     this.listBookForthcoming = listBookForthcoming;
   },
-  created() {}
 };
 </script>
 

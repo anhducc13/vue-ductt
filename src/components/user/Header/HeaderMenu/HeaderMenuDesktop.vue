@@ -325,10 +325,6 @@
               </li>
 
               <li class="root">
-                <router-link to="/khoa-hoc">Khóa học</router-link>
-              </li>
-
-              <li class="root">
                 <router-link to="/tin-tuc">Tin tức</router-link>
               </li>
 

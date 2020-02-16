@@ -12,12 +12,47 @@
       </p>
     </div>
     <div class="cart-desktop__thead">
-      <div class="cart-desktop__col-1">Sản phẩm</div>
-      <div class="cart-desktop__col-2">Đơn giá</div>
-      <div class="cart-desktop__col-3">Số lượng</div>
-      <div class="cart-desktop__col-4">Thành tiền</div>
+      <div class="cart-desktop__col-1" style="width: 50%">Sản phẩm</div>
+      <div class="cart-desktop__col-3" style="width: 25%">Số lượng</div>
+      <div class="cart-desktop__col-4" style="width: 25%">Thành tiền</div>
     </div>
-    <div class="cart-desktop__tbody"></div>
+    <div class="cart-desktop__tbody">
+      <div class="cart-popup__item" v-for="item in products_of_cart" :key="item.id">
+        <div class="cart-desktop__col-1" style="width: 50%">
+          <div class="cart-popup__item-image">
+            <router-link
+              :to="`/san-pham/${item.url}`"
+              :title="item.name"
+            >
+              <img
+                :alt="name(item.name)"
+                :src="item.images[0]"
+                width="80"
+              />
+            </router-link>
+          </div>
+          <div class="cart-popup__item-info">
+            <p class="cart-popup__item-name">
+              <router-link
+              :to="`/san-pham/${item.url}`"
+              :title="item.name"
+            >{{name(item.name)}}</router-link>
+            </p>
+            <p class="cart-popup__item-remove">
+              <icon-remove :pId="item.id" />
+            </p>
+          </div>
+        </div>
+        <div class="cart-desktop__col-3" style="width: 25%">
+          <product-quantity :item="item" />
+        </div>
+        <div class="cart-desktop__col-4" style="width: 25%">
+          <span class="cart-popup__item-price">
+            <span class="cart-popup__item-price__price total-price-item">{{price(item.total_price)}}₫</span>
+          </span>
+        </div>
+      </div>
+    </div>
     <div class="cart-desktop__tfooter">
       <div class="cart-desktop__tfooter-info clearfix">
         <p class="cart-desktop__tfooter-hotline" />
@@ -48,12 +83,19 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { numberWithDots } from "@/utils/display";
+import { message } from "ant-design-vue";
+import ProductQuantity from "../ProductQuantity";
+import IconRemove from "../IconRemove";
+import { numberWithDots, shortText } from "@/utils/display";
 export default {
+  components: { ProductQuantity, IconRemove },
   computed: {
     ...mapState("cart", ["openModalCart", "products_of_cart", "sub_total"]),
     price() {
       return p => `${numberWithDots(p)}`;
+    },
+    name() {
+      return n => (n === shortText(n) ? n : `${shortText(n)} ...`);
     }
   },
   methods: {
@@ -61,8 +103,13 @@ export default {
       setModalCart: "cart/setModalCart"
     }),
     toCheckout() {
-      this.setModalCart(false);
-      this.$router.push({ path: "/thanh-toan" });
+      
+      if (this.products_of_cart.length) {
+        this.setModalCart(false);
+        this.$router.push({ path: "/thanh-toan" });
+      } else {
+        message.warning("Không có sản phẩm nào trong giỏ hàng để thanh toán");
+      }
     }
   }
 };

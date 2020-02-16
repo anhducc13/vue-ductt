@@ -50,7 +50,7 @@ class Cart {
   removeFromCart(productId) {
     let myCart = this.globalCart;
     for (let i = 0; i < myCart.products.length; i++) {
-      if (myCart.products[i].product_id == productId) {
+      if (myCart.products[i].id == productId) {
         myCart.products.splice(i, 1);
         break;
       }
@@ -112,7 +112,6 @@ class Cart {
         currentCart.products[i].sale_price * currentCart.products[i].qty;
       currentCart.sub_total += currentCart.products[i].total_price;
     }
-    console.log(currentCart.sub_total);
     localStorage.setItem(CART_KEY, JSON.stringify(currentCart));
     this.globalCart = currentCart;
   }
