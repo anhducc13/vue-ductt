@@ -8,10 +8,7 @@
               <td>
                 <div class="product-thumbnail">
                   <div class="product-thumbnail__wrapper">
-                    <img
-                      :src="item.images[0]"
-                      class="product-thumbnail__image"
-                    />
+                    <img :src="item.images[0].url" class="product-thumbnail__image" />
                   </div>
                   <span class="product-thumbnail__quantity" aria-hidden="true">{{item.qty}}</span>
                 </div>
@@ -46,7 +43,7 @@ export default {
     name() {
       return n => (n === shortText(n) ? n : `${shortText(n)} ...`);
     }
-  },
+  }
 };
 </script>
 

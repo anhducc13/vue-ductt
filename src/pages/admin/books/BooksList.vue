@@ -13,6 +13,7 @@
       bordered
       @change="handleTableChange"
       :pagination="{
+        total: listBooks.total_items,
         current: filters.page,
         pageSize: filters.page_size,
         showQuickJumper: true,
@@ -58,11 +59,13 @@ const columns = [
     sorter: true
   },
   {
+    width: "20%",
     title: "Tên hiển thị",
     dataIndex: "short_name",
     sorter: true
   },
   {
+    width: "20%",
     title: "URL",
     dataIndex: "url",
     sorter: true
@@ -107,6 +110,7 @@ export default {
   name: "BooksList",
   data() {
     return {
+      pagination: {},
       filters: {
         page: 1,
         page_size: 10,

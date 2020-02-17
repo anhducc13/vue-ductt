@@ -31,3 +31,15 @@ export const cleanRequestBody = (body) => {
   })
   return body;
 }
+
+export const buildCategoriesTree2Level = (cats) => {
+  let newCat = cats.filter(c => c.level === 1);
+  newCat = newCat.map(c => {
+    const children = cats.filter(ch => ch.level === 2 && ch.parent_id === c.id);
+    return {
+      ...c,
+      children
+    }
+  });
+  return newCat;
+}

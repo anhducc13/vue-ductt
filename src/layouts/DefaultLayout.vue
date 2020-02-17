@@ -8,12 +8,14 @@ export default {
     Header,
     Footer
   },
-  created() {
+  async created() {
     this.getCart(getMyCart().data);
+    await this.fetchCategoriesMenu();
   },
   methods: {
     ...mapActions({
-      getCart: "cart/getCart"
+      getCart: "cart/getCart",
+      fetchCategoriesMenu: "extra/fetchCategoriesMenu"
     })
   }
 };

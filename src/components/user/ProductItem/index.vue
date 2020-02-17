@@ -11,12 +11,17 @@
         </div>
 
         <router-link :to="`/san-pham/${item.url}`" class="prod-img">
-          <img :src="item.images[0]" :alt="item.name" />
+          <img :src="item.images[0].url" :alt="item.name" />
         </router-link>
 
         <span class="tz-shop-meta">
           <input type="hidden" name="variantId" value="25662565" />
-          <a href="javascript:void(0);" class="tzshopping add_to_cart add-cart" title="Mua ngay" @click="() => buyNow(item)">
+          <a
+            href="javascript:void(0);"
+            class="tzshopping add_to_cart add-cart"
+            title="Mua ngay"
+            @click="() => buyNow(item)"
+          >
             <i class="fa fa-shopping-cart"></i> Mua ngay
           </a>
         </span>
@@ -49,7 +54,10 @@
 <script>
 import { mapActions } from "vuex";
 import { numberWithDots, shortText } from "@/utils/display";
-import { getCart as getMyCart, addToCart as addProdToCart } from "@/api/home/checkoutServices";
+import {
+  getCart as getMyCart,
+  addToCart as addProdToCart
+} from "@/api/home/checkoutServices";
 export default {
   name: "ProductItem",
   props: {

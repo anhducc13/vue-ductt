@@ -516,6 +516,9 @@ export default {
         if (newData === SALE_STATUS.OUTOFSTOCK.key) {
           this.formData.quantity_in_stock = 0;
         }
+        if (newData !== SALE_STATUS.UPCOMING.key) {
+          this.formData.on_sale_date = null;
+        }
       },
       deep: true
     }

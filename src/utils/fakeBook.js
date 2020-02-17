@@ -13,7 +13,7 @@ export const generateBook = () => {
     status: ["Còn hàng", "Sắp bán", "Hết hàng", "Ngừng bán"][faker.random.number() % 2],
     name,
     url: slugify(name),
-    images: [1, 2, 3].map(() => `https://i.picsum.photos/id/${id}/200/300.jpg`),
+    images: [1, 2, 3].map(() => ({ url: `https://i.picsum.photos/id/${id}/200/300.jpg` })),
     root_price: price,
     sale_price: faker.random.number(price)
   };

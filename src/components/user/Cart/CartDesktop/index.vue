@@ -17,7 +17,7 @@
         <div class="cart-tbody">
           <div v-for="item in products_of_cart" :key="item.id" class="item-cart">
             <div style="width: 18%" class="image">
-              <product-image :alt="name(item.name)" :src="item.images[0]" :url="item.url" />
+              <product-image :alt="name(item.name)" :src="item.images[0].url" :url="item.url" />
             </div>
             <div style="width: 31%" class="a-left">
               <product-name :name="name(item.name)" :url="item.url" />

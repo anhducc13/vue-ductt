@@ -1,9 +1,9 @@
 <template>
   <div class="mt-4">
-    <box-sort :selected="filter.sortBy" />
+    <box-sort :selected="`${filter.sort_by}-${filter.order_by}`" />
     <product-list :list="listProducts" />
     <div class="container mb-5 text-center">
-      <Pagination :current="filter.page" />
+      <Pagination :current="filter.page" :total="total_items" />
     </div>
   </div>
 </template>
@@ -21,8 +21,10 @@ export default {
       filter: {
         slug: this.$route.params.slug,
         page: parseInt(this.$route.query.page || 1),
-        sortBy: this.$route.query.sort || "created-desc"
+        sort_by: this.$route.query.sort_by || "created_at",
+        order_by: this.$route.query.order_by || "desc"
       },
+      total_items: 0,
       listProducts: []
     };
   },
@@ -31,7 +33,12 @@ export default {
       document.title = getPageTitle("Văn học");
     },
     async getProductOfCat() {
-      const { results } = await productServices.getSaleCategory(this.filter);
+      const { slug, ...others } = this.filter;
+      const { results, total_items } = await productServices.getSaleCategory(
+        slug,
+        others
+      );
+      this.total_items = total_items;
       this.listProducts = results;
     },
     changeState() {
@@ -39,14 +46,15 @@ export default {
         ...this.filter,
         slug: this.$route.params.slug,
         page: parseInt(this.$route.query.page || 1),
-        sortBy: this.$route.query.sort || "created-desc"
-      }
+        order_by: this.$route.query.order_by || "desc",
+        sort_by: this.$route.query.sort_by || "created_at"
+      };
     }
   },
   watch: {
-    $route() {
-      this.getProductOfCat();
-      this.changeState()
+    async $route() {
+      this.changeState();
+      await this.getProductOfCat();
     }
   },
   created() {

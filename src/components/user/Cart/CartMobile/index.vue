@@ -7,7 +7,7 @@
     <div class="mini-list">
       <ul class="list-item-cart">
         <li class="item" v-for="item in products_of_cart" :key="item.id">
-          <product-image :alt="name(item.name)" :src="item.images[0]" :url="item.url" />
+          <product-image :alt="name(item.name)" :src="item.images[0].url" :url="item.url" />
           <div class="detail-item">
             <div class="product-details">
               <icon-remove :pId="item.id" />
@@ -27,11 +27,7 @@
         <span class="price total-price">{{price(sub_total)}}₫</span>
       </div>
       <div class="actions">
-        <button
-          class="btn-checkout"
-          type="button"
-          @click="toCheckout"
-        >
+        <button class="btn-checkout" type="button" @click="toCheckout">
           <span>
             <i class="fa fa-money" aria-hidden="true"></i> Tiến hành đặt hàng
           </span>

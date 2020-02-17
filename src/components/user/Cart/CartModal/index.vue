@@ -20,23 +20,13 @@
       <div class="cart-popup__item" v-for="item in products_of_cart" :key="item.id">
         <div class="cart-desktop__col-1" style="width: 50%">
           <div class="cart-popup__item-image">
-            <router-link
-              :to="`/san-pham/${item.url}`"
-              :title="item.name"
-            >
-              <img
-                :alt="name(item.name)"
-                :src="item.images[0]"
-                width="80"
-              />
+            <router-link :to="`/san-pham/${item.url}`" :title="item.name">
+              <img :alt="name(item.name)" :src="item.images[0].url" width="80" />
             </router-link>
           </div>
           <div class="cart-popup__item-info">
             <p class="cart-popup__item-name">
-              <router-link
-              :to="`/san-pham/${item.url}`"
-              :title="item.name"
-            >{{name(item.name)}}</router-link>
+              <router-link :to="`/san-pham/${item.url}`" :title="item.name">{{name(item.name)}}</router-link>
             </p>
             <p class="cart-popup__item-remove">
               <icon-remove :pId="item.id" />
@@ -48,7 +38,9 @@
         </div>
         <div class="cart-desktop__col-4" style="width: 25%">
           <span class="cart-popup__item-price">
-            <span class="cart-popup__item-price__price total-price-item">{{price(item.total_price)}}₫</span>
+            <span
+              class="cart-popup__item-price__price total-price-item"
+            >{{price(item.total_price)}}₫</span>
           </span>
         </div>
       </div>
@@ -103,7 +95,6 @@ export default {
       setModalCart: "cart/setModalCart"
     }),
     toCheckout() {
-      
       if (this.products_of_cart.length) {
         this.setModalCart(false);
         this.$router.push({ path: "/thanh-toan" });

@@ -13,7 +13,7 @@
         >
           <div class="div_img_home div_img_listing">
             <router-link :to="item.url" :title="item.name">
-              <img :src="item.images[0]" :alt="item.name" class="img-full img-upcomming" />
+              <img :src="item.images[0].url" :alt="item.name" class="img-full img-upcomming" />
             </router-link>
             <span class="saleoff-listing">-{{item.salePercent}}%</span>
           </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container mb-5 text-center">
+  <div class="container mb-5 text-center" v-if="total > size">
     <a-pagination :current="current" :pageSize="size" :total="total" @change="handleChange" />
   </div>
 </template>
@@ -20,16 +20,16 @@ export default {
       default: 20
     }
   },
-   methods: {
+  methods: {
     handleChange(page) {
       const currRoute = this.$route;
       this.$router.push({
         ...currRoute,
         query: {
           ...currRoute.query,
-          page,
+          page
         }
-      })
+      });
     }
   }
 };

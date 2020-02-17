@@ -1,8 +1,10 @@
-// import { normalService } from "@/utils/request";
-import { generateListBook } from "@/utils/fakeBook";
+import { normalService } from "@/utils/request";
+// import { generateListBook } from "@/utils/fakeBook";
 
-const getSaleCategory = (params) => {
-  return generateListBook(20);
+const getSaleCategory = (slug, params) => {
+  return normalService
+    .get(`/marketproduct/saleCategory/${slug}`, { params })
+    .then(res => res.data.data);
 }
 
 export default {
