@@ -1003,7 +1003,7 @@ p.buttons a {
   }
 }
 
-.item-inner .laster-thumb .tz-shop-meta a {
+.item-inner .laster-thumb .tz-shop-meta a:first-child {
   border: 0;
   transform: translate(-50%, -50%);
   background: #444 none repeat scroll 0 0;
@@ -1012,7 +1012,26 @@ p.buttons a {
   left: 50%;
   padding: 5px 10px;
   position: absolute;
-  top: 50%;
+  top: 38%;
+  white-space: nowrap;
+  transition: all 0.4s ease-in-out 0s;
+  -webkit-transition: all 0.4s ease-in-out 0s;
+  -ms-transition: all 0.4s ease-in-out 0s;
+  opacity: 0;
+  text-transform: uppercase;
+  font-size: 13px;
+  z-index: 999;
+}
+.item-inner .laster-thumb .tz-shop-meta a:last-child {
+  border: 0;
+  transform: translate(-50%, -50%);
+  background: #444 none repeat scroll 0 0;
+  border: 0 none;
+  color: #fff;
+  left: 50%;
+  padding: 5px 10px;
+  position: absolute;
+  bottom: 38%;
   white-space: nowrap;
   transition: all 0.4s ease-in-out 0s;
   -webkit-transition: all 0.4s ease-in-out 0s;
@@ -1024,15 +1043,15 @@ p.buttons a {
 }
 
 .item-inner:hover .laster-thumb .tz-shop-meta a {
-  animation-duration: 1s;
+  /* animation-duration: 1s;
   animation-iteration-count: 1;
   animation-name: hvr-adtocart;
-  animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out; */
   opacity: 1;
   margin-top: 0;
-  transition: all 1s ease-in-out 0s;
+  /* transition: all 1s ease-in-out 0s;
   -webkit-transition: all 1s ease-in-out 0s;
-  -ms-transition: all 1s ease-in-out 0s;
+  -ms-transition: all 1s ease-in-out 0s; */
 }
 
 .item-inner .laster-thumb .tz-shop-meta a:hover {

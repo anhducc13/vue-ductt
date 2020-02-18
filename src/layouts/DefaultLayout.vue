@@ -2,14 +2,16 @@
 import { mapActions } from "vuex";
 import Header from "@/components/user/Header";
 import Footer from "@/components/user/Footer";
-import { getCart as getMyCart } from "@/api/home/checkoutServices";
+import cart from "@/mixins/cart";
+
 export default {
   components: {
     Header,
     Footer
   },
+  mixins: [cart],
   async created() {
-    this.getCart(getMyCart().data);
+    this.reloadCart();
     await this.fetchCategoriesMenu();
   },
   methods: {

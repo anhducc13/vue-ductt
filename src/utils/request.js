@@ -15,7 +15,7 @@ service.interceptors.request.use(
   config => {
     store.dispatch("app/setLoading", true);
     if (store.getters.token) {
-      config.headers["X-Token"] = getToken();
+      config.headers["X-Token"] = `Bearer ${getToken()}`;
     }
     return config;
   },
@@ -41,6 +41,14 @@ service.interceptors.response.use(
       const { response } = error;
       if (response.status === 400) {
         const err = response.data.errors;
+        const message = response.data.message;
+        if (message) {
+          notification.error({
+            message: "Có lỗi",
+            description: message
+          });
+          return;
+        }
         if (err && err.length) {
           notification.error({
             message: "Có lỗi",

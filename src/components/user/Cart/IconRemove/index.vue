@@ -1,24 +1,16 @@
 <template>
-  <a title="Xóa" class="remove-item-cart fa fa-trash-o" @click="() => removeItemFromCart()" />
+  <a title="Xóa" class="remove-item-cart fa fa-trash-o" @click="() => removeItemFromCart(pId)" />
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { getCart as getMyCart, removeFromCart } from "@/api/home/checkoutServices";
+import cart from "@/mixins/cart";
+
 export default {
+  mixins: [cart],
   props: {
     pId: {
       type: Number || String,
       required: true
-    }
-  },
-  methods: {
-    ...mapActions({
-      getCart: "cart/getCart"
-    }),
-    removeItemFromCart() {
-      removeFromCart(this.pId);
-      this.getCart(getMyCart().data)
     }
   }
 };

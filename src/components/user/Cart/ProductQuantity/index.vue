@@ -15,22 +15,23 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import { updateCart, getCart as getMyCart } from "@/api/home/checkoutServices";
+import cart from "@/mixins/cart";
+
 export default {
+  mixins: [cart],
   props: {
     item: {
       type: Object,
       required: true
+    },
+    onChange: {
+      type: Function,
+      default() {
+        return () => {};
+      }
     }
   },
-  computed: {
-    ...mapState("cart", ["products_of_cart"]),
-  },
   methods: {
-    ...mapActions({
-      getCart: "cart/getCart"
-    }),
     changeQty(qty) {
       if (this.item.qty === 1 && qty < 0) {
         return false;
@@ -39,17 +40,7 @@ export default {
       this.emitChange();
     },
     emitChange() {
-      const newCartProds = this.products_of_cart.map(x => {
-        if (x.id === this.item.id) {
-          return {
-            ...x,
-            qty: this.item.qty
-          }
-        }
-        return x;
-      })
-      updateCart({ products: newCartProds });
-      this.getCart(getMyCart().data);
+      this.changeQtyCart(this.item);
     },
     onlyNumber($event) {
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;

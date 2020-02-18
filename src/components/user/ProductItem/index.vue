@@ -15,7 +15,6 @@
         </router-link>
 
         <span class="tz-shop-meta">
-          <input type="hidden" name="variantId" value="25662565" />
           <a
             href="javascript:void(0);"
             class="tzshopping add_to_cart add-cart"
@@ -23,6 +22,14 @@
             @click="() => buyNow(item)"
           >
             <i class="fa fa-shopping-cart"></i> Mua ngay
+          </a>
+          <a
+            href="javascript:void(0);"
+            class="tzshopping add_to_cart add-cart"
+            title="Thêm vào giỏ hàng"
+            @click="() => addOneToCart(item)"
+          >
+            <i class="fa fa-cart-plus"></i> Thêm giỏ hàng
           </a>
         </span>
       </div>
@@ -52,14 +59,12 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import { numberWithDots, shortText } from "@/utils/display";
-import {
-  getCart as getMyCart,
-  addToCart as addProdToCart
-} from "@/api/home/checkoutServices";
+import cart from "@/mixins/cart";
+
 export default {
   name: "ProductItem",
+  mixins: [cart],
   props: {
     item: {
       type: Object,
@@ -78,14 +83,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions("cart", ["getCart", "setModalCart"]),
-    addToCart(product, qty = 1) {
-      addProdToCart(product, qty);
-      this.getCart(getMyCart().data);
+    addOneToCart(product) {
+      this.addToCart(product, 1);
+      this.setModalCart(true);
     },
     buyNow(product) {
       this.addToCart(product, 1);
-      this.setModalCart(true);
+      this.$router.push({ path: "/gio-hang" });
     }
   }
 };

@@ -24,10 +24,10 @@
                 >
                   <a-form-item :help="errors[0]" :validate-status="errors[0] ? 'error': ''">
                     <a-input
-                      ref="username"
+                      ref="username_or_email"
                       size="large"
                       placeholder="Nhập tên đăng nhập"
-                      v-model="formData.username"
+                      v-model="formData.username_or_email"
                     >
                       <a-icon slot="prefix" type="user" />
                     </a-input>
@@ -99,22 +99,22 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Login",
   components: {},
   data() {
     return {
       formData: {
-        username: "",
+        username_or_email: "",
         password: "",
         rememberMe: true
       }
     };
   },
   mounted() {
-    if (this.formData.username.trim() === "") {
-      this.$refs.username.focus();
+    if (this.formData.username_or_email.trim() === "") {
+      this.$refs.username_or_email.focus();
     } else if (this.formData.password.trim() === "") {
       this.$refs.password.focus();
     }
@@ -123,9 +123,11 @@ export default {
     ...mapGetters(["loading"])
   },
   methods: {
+    ...mapActions({
+      login: "user/login"
+    }),
     onSubmit() {
-      this.$store
-        .dispatch("user/login", { ...this.formData, loginAdmin: true })
+      this.login({ ...this.formData, loginAdmin: true })
         .then(() => {
           const { redirect } = this.$router.currentRoute.query;
           if (redirect) {
