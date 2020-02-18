@@ -1,3 +1,11 @@
+<template>
+	<div>
+		<Header />
+		<slot />
+		<Footer />
+	</div>
+</template>
+
 <script>
 import { mapActions } from "vuex";
 import Header from "@/components/user/Header";
@@ -23,10 +31,3 @@ export default {
 };
 </script>
 
-<template>
-  <div>
-    <Header />
-    <slot />
-    <Footer />
-  </div>
-</template>
