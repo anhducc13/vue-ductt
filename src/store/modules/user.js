@@ -33,14 +33,15 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password, loginAdmin } = userInfo;
+    const { username_or_email, password, loginAdmin } = userInfo;
     return new Promise((resolve, reject) => {
-      login({ username, password })
+      login({ username_or_email, password })
         .then(response => {
-          const { data } = response;
-          const { admin } = data;
+          console.log(response);
+          const { user, token } = response;
+          // const { admin } = data;
           if (loginAdmin) {
-            if (admin === true) {
+            if (user.is_admin) {
               commit("SET_ADMIN", true);
             } else {
               router.push("/403");
@@ -49,11 +50,10 @@ const actions = {
           } else {
             commit("SET_ADMIN", false);
           }
-          commit("SET_TOKEN", data.token);
-          commit("SET_NAME", data.name);
-          commit("SET_AVATAR", data.avatar);
-          commit("SET_INTRODUCTION", data.introduction);
-          setToken(data.token);
+          commit("SET_TOKEN", token);
+          commit("SET_NAME", user.username);
+          commit("SET_AVATAR", user.avatar);
+          setToken(token);
           resolve();
         })
         .catch(error => {

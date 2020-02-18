@@ -49,14 +49,16 @@
 
 <script>
 import { message } from "ant-design-vue";
-import { mapState } from "vuex";
 import ProductName from "../ProductName";
 import ProductImage from "../ProductImage";
 import ProductQuantity from "../ProductQuantity";
 import IconRemove from "../IconRemove";
 import { numberWithDots, shortText } from "@/utils/display";
+import cart from "@/mixins/cart";
+
 export default {
   components: { ProductName, ProductImage, ProductQuantity, IconRemove },
+  mixins: [cart],
   props: {
     backToHome: {
       type: Boolean,
@@ -64,7 +66,6 @@ export default {
     }
   },
   computed: {
-    ...mapState("cart", ["products_of_cart", "sub_total"]),
     price() {
       return p => `${numberWithDots(p)}`;
     },

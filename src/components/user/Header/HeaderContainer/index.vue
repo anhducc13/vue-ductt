@@ -27,8 +27,8 @@
                   <router-link class="cart-toggler" to="/gio-hang">
                     <span class="cart-no">
                       <span class="cart-icon"></span>
-                      <i class="fa fa-shopping-cart"></i> (
-                      <span id="cart-total">{{products_of_cart.length}}</span> ) sản phẩm
+                      <i class="fa fa-shopping-cart"></i> &nbsp;
+                      <span id="cart-total">({{totalItems}}</span> sản phẩm)
                     </span>
                   </router-link>
                   <div class="cart-droplist" v-show="displayCartDetail">
@@ -79,20 +79,27 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import CartMobile from "@/components/user/Cart/CartMobile";
 import CartModal from "@/components/user/Cart/CartModal";
+import cart from "@/mixins/cart";
+
 export default {
   name: "HeaderContainer",
   components: { CartMobile, CartModal },
+  mixins: [cart],
   data() {
     return {
       displayCartDetail: false
     };
   },
   computed: {
-    ...mapState("cart", ["products_of_cart"])
-  },
+    totalItems() {
+      return this.products_of_cart.reduce(
+        (pre, curr) => parseInt(pre + curr.qty),
+        0
+      );
+    }
+  }
 };
 </script>
 

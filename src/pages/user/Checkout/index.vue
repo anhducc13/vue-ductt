@@ -361,17 +361,18 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
 import PaymentMethod from "@/components/user/Checkout/PaymentMethod";
 import ShippingMethod from "@/components/user/Checkout/ShippingMethod";
 import ProductTable from "@/components/user/Checkout/ProductTable";
 import { checkout } from "@/utils/checkout";
 import { numberWithDots } from "@/utils/display";
-import { getCart as getMyCart } from "@/api/home/checkoutServices";
+import cart from "@/mixins/cart";
+
 export default {
   components: { PaymentMethod, ShippingMethod, ProductTable },
+  mixins: [cart],
   created() {
-    this.getCart(getMyCart().data);
+    this.reloadCart();
   },
   data() {
     return {
@@ -409,15 +410,11 @@ export default {
     };
   },
   computed: {
-    ...mapState("cart", ["products_of_cart", "sub_total"]),
     price() {
       return p => `${numberWithDots(p)}`;
-    },
+    }
   },
   methods: {
-    ...mapActions({
-      getCart: "cart/getCart"
-    }),
     checkoutOrder() {
       checkout();
     }

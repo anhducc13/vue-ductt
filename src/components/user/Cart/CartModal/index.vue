@@ -2,14 +2,8 @@
   <a-modal :footer="null" :visible="openModalCart" @cancel="() => setModalCart(false)">
     <div class="cart-desktop__title" slot="title">
       <a href="/cart">
-        <i class="fa fa-shopping-cart" aria-hidden="true"></i> Giỏ hàng của bạn (
-        <span class="cart-popup-count">{{products_of_cart.length}}</span> sản phẩm)
+        <i class="fa fa-shopping-cart" aria-hidden="true"></i> Giỏ hàng của bạn
       </a>
-    </div>
-    <div class="modal-body">
-      <p class="cart-desktop__status">
-        <i class="fa fa-check" aria-hidden="true"></i> Thêm thành công vào giỏ hàng
-      </p>
     </div>
     <div class="cart-desktop__thead">
       <div class="cart-desktop__col-1" style="width: 50%">Sản phẩm</div>
@@ -74,15 +68,16 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
 import { message } from "ant-design-vue";
 import ProductQuantity from "../ProductQuantity";
 import IconRemove from "../IconRemove";
 import { numberWithDots, shortText } from "@/utils/display";
+import cart from "@/mixins/cart";
+
 export default {
   components: { ProductQuantity, IconRemove },
+  mixins: [cart],
   computed: {
-    ...mapState("cart", ["openModalCart", "products_of_cart", "sub_total"]),
     price() {
       return p => `${numberWithDots(p)}`;
     },
@@ -91,9 +86,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      setModalCart: "cart/setModalCart"
-    }),
     toCheckout() {
       if (this.products_of_cart.length) {
         this.setModalCart(false);
