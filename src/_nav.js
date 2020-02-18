@@ -33,7 +33,7 @@ export const nav = [
       },
       {
         path: "/admin/books/new",
-        name: "Thêm mới sách",
+        name: "Thêm sách",
         icon: "plus"
       }
     ]
@@ -50,7 +50,7 @@ export const nav = [
       },
       {
         path: "/admin/categories/new",
-        name: "Thêm mới danh mục",
+        name: "Thêm danh mục",
         icon: "plus"
       }
     ]
@@ -58,11 +58,18 @@ export const nav = [
   {
     name: "Quản lý đơn hàng",
     icon: "shopping",
-    path: "/admin/orders/list"
+    path: "/admin/orders",
+    children: [
+      {
+        path: "/admin/orders/list",
+        name: "Danh sách đơn hàng",
+        icon: "ordered-list"
+      },
+      {
+        path: "/admin/orders/new",
+        name: "Thêm đơn hàng",
+        icon: "plus"
+      }
+    ]
   },
-  // {
-  //   name: "Quản lý NXB",
-  //   icon: "printer",
-  //   path: "/admin/publishers"
-  // }
 ];

@@ -34,9 +34,4 @@ export default [
     meta: { title: "Thanh toán" },
     component: () => import("@/pages/user/Checkout")
   },
-  {
-    path: "*",
-    meta: { layout: "default", title: "404 Không tìm thấy trang" },
-    component: () => import("@/pages/user/_404")
-  }
 ];

@@ -25,6 +25,11 @@ const router = new Router({
     {
       path: "/404",
       component: () => import("@/pages/shared/404.vue")
+    },
+    {
+      path: "*",
+      meta: { layout: "default", title: "404 Không tìm thấy trang" },
+      component: () => import("@/pages/user/_404")
     }
   ],
   scrollBehavior() {

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { notification } from "ant-design-vue";
-import router from "@/router";
 import store from "@/store";
 import { getToken } from "@/utils/auth";
 
@@ -14,9 +13,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     store.dispatch("app/setLoading", true);
-    if (store.getters.token) {
-      config.headers["X-Token"] = `Bearer ${getToken()}`;
-    }
+    config.headers["X-Token"] = `Bearer ${getToken()}`;
     return config;
   },
   error => {
@@ -58,7 +55,10 @@ service.interceptors.response.use(
       } else if (response.status === 404) {
         //
       } else if (response.status === 401 || response.status === 403) {
-        router.push("/403");
+        notification.error({
+          message: "Có lỗi",
+          description: response.data.message
+        });
       } else {
         notification.error({
           message: "Có lỗi",

@@ -1,11 +1,10 @@
-import { login, logout, getInfo } from "@/api/user";
-import { getToken, setToken, removeToken } from "@/utils/auth";
+import { login, getInfo } from "@/api/user";
+import { setToken, removeToken } from "@/utils/auth";
 import router from "@/router";
 
 // import router, { resetRouter } from "@/router";
 
 const state = {
-  token: getToken(),
   name: "",
   avatar: "",
   introduction: "",
@@ -37,9 +36,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username_or_email, password })
         .then(response => {
-          console.log(response);
           const { user, token } = response;
-          // const { admin } = data;
           if (loginAdmin) {
             if (user.is_admin) {
               commit("SET_ADMIN", true);
@@ -50,7 +47,6 @@ const actions = {
           } else {
             commit("SET_ADMIN", false);
           }
-          commit("SET_TOKEN", token);
           commit("SET_NAME", user.username);
           commit("SET_AVATAR", user.avatar);
           setToken(token);
@@ -63,49 +59,26 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token)
+      getInfo()
         .then(response => {
-          const { data } = response;
+          const { user } = response;
 
-          if (!data) {
+          if (!user) {
             reject("Verification failed, please Login again.");
           }
 
-          const { admin, name, avatar, introduction } = data;
+          const { is_admin, username, avatar } = user;
 
           // roles must be a non-empty array
-          if (![true, false].includes(admin)) {
+          if (![true, false].includes(is_admin)) {
             reject("getInfo: roles admin must be true or false!");
           }
-
-          commit("SET_NAME", name);
+          commit("SET_NAME", username);
           commit("SET_AVATAR", avatar);
-          commit("SET_INTRODUCTION", introduction);
-          commit("SET_ADMIN", admin);
-          resolve(data);
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  },
-
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token)
-        .then(() => {
-          commit("SET_TOKEN", "");
-          removeToken();
-          // resetRouter();
-
-          // reset visited views and cached views
-          // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-          // dispatch("tagsView/delAllViews", null, { root: true });
-
-          resolve();
+          commit("SET_ADMIN", is_admin);
+          resolve(user);
         })
         .catch(error => {
           reject(error);
