@@ -55,6 +55,11 @@ export default [
     component: () => import("@/pages/admin/books/BookNew")
   },
   {
+    path: "/admin/orders/new",
+    meta: { layout: "admin" },
+    component: () => import("@/pages/admin/orders/OrderNew")
+  },
+  {
     path: "/admin/login",
     component: () => import("@/pages/admin/Login")
   }
