@@ -111,7 +111,7 @@
                         </router-link>-->
                       </div>
                     </div>
-                    <!-- <div class="section__content">
+                    <div class="section__content">
                       <validation-provider rules="email" v-slot="{ errors }">
                         <a-form-item
                           label="Email"
@@ -208,7 +208,7 @@
                       <a-form-item label="Ghi chú">
                         <a-textarea placeholder="Nhập ghi chú" :rows="3" v-model="buyerInfo.note" />
                       </a-form-item>
-                    </div>-->
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-12 col-lg-6">

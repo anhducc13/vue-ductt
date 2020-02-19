@@ -2,10 +2,11 @@ import axios from "axios";
 import { notification } from "ant-design-vue";
 import store from "@/store";
 import { getToken } from "@/utils/auth";
+import router from "@/router";
 
 // create an axios instance
 const service = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: "http://localhost:3001/api",
   timeout: 5000 // request timeout
 });
 
@@ -59,6 +60,7 @@ service.interceptors.response.use(
           message: "Có lỗi",
           description: response.data.message
         });
+        router.push({ path: "/admin/login" })
       } else {
         notification.error({
           message: "Có lỗi",
