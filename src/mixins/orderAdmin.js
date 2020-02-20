@@ -1,4 +1,5 @@
 import { fetchBooksList } from "@/api/books";
+import { fetchCities, fetchDistricts, fetchWards } from "@/api/places";
 
 export default {
   data() {
@@ -11,8 +12,8 @@ export default {
       showButtonNextPage: false,
       pickedItem: [],
 
-      openModalBuyerInfo: true,
-      buyerInfo: {
+      openModalBuyerInfo: false,
+      pseudoBuyerInfo: {
         cities: [],
         districts: [],
         wards: [],
@@ -25,17 +26,32 @@ export default {
         address: "",
         note: ""
       },
-      openModalReceivedInfo: false,
-
-    }
+      openModalReceivedInfo: false
+    };
   },
   computed: {
     isChecked() {
-      const ids = this.pickedItem.map(x => x.id)
+      const ids = this.pickedItem.map(x => x.id);
       return val => ids.includes(val);
     }
   },
   methods: {
+    async fetchAllCities() {
+      const { results } = await fetchCities();
+      this.pseudoBuyerInfo.cities = results;
+    },
+    async fetchAllDistricts() {
+      const { results } = await fetchDistricts({
+        city_id: this.pseudoBuyerInfo.city_id
+      });
+      this.pseudoBuyerInfo.districts = results;
+    },
+    async fetchAllWards() {
+      const { results } = await fetchWards({
+        district_id: this.pseudoBuyerInfo.district_id
+      });
+      this.pseudoBuyerInfo.wards = results;
+    },
     async handleFetchFirstTime() {
       this.listProductSearch = [];
       this.pageSearch = 1;
@@ -44,7 +60,11 @@ export default {
     },
     async handleSearchProducts() {
       const prevList = this.listProductSearch;
-      const { data } = await fetchBooksList({ q: this.textSearch, page: this.pageSearch, page_size: 5 });
+      const { data } = await fetchBooksList({
+        q: this.textSearch,
+        page: this.pageSearch,
+        page_size: 5
+      });
       this.listProductSearch = prevList.concat(data.results);
       if (data.page_size * data.page < data.total_items) {
         this.showButtonNextPage = true;
@@ -58,7 +78,9 @@ export default {
     },
     handlePickProduct(e) {
       if (e.target.checked) {
-        const newItem = this.listProductSearch.find(x => x.id === e.target.value);
+        const newItem = this.listProductSearch.find(
+          x => x.id === e.target.value
+        );
         this.pickedItem.push(newItem);
       } else {
         this.pickedItem = this.pickedItem.filter(x => x.id !== e.target.value);
@@ -67,15 +89,23 @@ export default {
   },
   watch: {
     textSearch() {
-      console.log(this.pickedItem)
       this.handleFetchFirstTime();
     },
-    openModalSearch(val) {
-      if (val) {
-        this.handleFetchFirstTime();
-      } else {
-        this.pickedItem = [];
-      }
+    "pseudoBuyerInfo.city_id": {
+      async handler(newData) {
+        if (newData) {
+          await this.fetchAllDistricts();
+        }
+      },
+      deep: true
+    },
+    "pseudoBuyerInfo.district_id": {
+      async handler(newData) {
+        if (newData) {
+          await this.fetchAllWards();
+        }
+      },
+      deep: true
     }
   }
 };
