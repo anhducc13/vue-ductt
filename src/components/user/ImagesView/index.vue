@@ -1,124 +1,62 @@
 <template>
-  <div>
-    <div class="sync1 owl-carousel large-image">
-      <div class="item">
-        <img
-          class="sp-image"
-          src="http://bizweb.dktcdn.net/100/197/269/products/90-ngay-dau-tien-lam-sep-outline-9-4-2018.jpg?v=1528345281287"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-      <div class="item">
-        <img
-          class="sp-image"
-          src="http://bizweb.dktcdn.net/100/197/269/products/90-ngay-dau-lam-sep.jpg?v=1496894192413"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-      <div class="item">
-        <img
-          class="sp-image"
-          src="http://bizweb.dktcdn.net/100/197/269/products/90-ngay-dau-lam-sep.jpg?v=1496894192413"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-      <div class="item">
-        <img
-          class="sp-image"
-          src="http://bizweb.dktcdn.net/100/197/269/products/90-ngay-dau-lam-sep.jpg?v=1496894192413"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-
-      <div class="item">
-        <img
-          class="sp-image"
-          src="http://bizweb.dktcdn.net/100/197/269/products/90-ngay-dau-tien-lam-sep-outline-9-4-2018.jpg?v=1528345281287"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-    </div>
-
-    <div class="sync2 owl-carousel">
-      <div class="item">
-        <img
-          src="http://bizweb.dktcdn.net/100/197/269/products/90-ngay-dau-tien-lam-sep-outline-9-4-2018.jpg?v=1528345281287"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-      <div class="item">
-        <img
-          src="http://bizweb.dktcdn.net/thumb/small/100/197/269/products/90-ngay-dau-lam-sep.jpg?v=1496894192413"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-      <div class="item">
-        <img
-          src="http://bizweb.dktcdn.net/thumb/small/100/197/269/products/90-ngay-dau-lam-sep.jpg?v=1496894192413"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-      <div class="item">
-        <img
-          src="http://bizweb.dktcdn.net/thumb/small/100/197/269/products/90-ngay-dau-lam-sep.jpg?v=1496894192413"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-
-      <div class="item">
-        <img
-          src="http://bizweb.dktcdn.net/thumb/small/100/197/269/products/90-ngay-dau-tien-lam-sep-outline-9-4-2018.jpg?v=1528345281287"
-          alt="90 Ngày Đầu Tiên Làm Sếp (Tái Bản)"
-        />
-      </div>
-    </div>
-  </div>
+	<a-carousel arrows dotsClass="slick-dots slick-thumb" v-if="currentBook">
+		<a slot="customPaging" slot-scope="props">
+			<img :src="getImgUrl(props.i)"/>
+		</a>
+		<div v-for="(item, index) in currentBook.images" :key="index">
+			<img :src="item.url"/>
+		</div>
+	</a-carousel>
 </template>
 
 <script>
-import $ from "jquery";
-export default {
-  name: "ImagesView",
-  mounted() {
-    this.$nextTick(() => {
-      this.installOwlCarousel();
-    });
-  },
-  methods: {
-    installOwlCarousel: function() {
-      $(".sync1").owlCarousel({
-        items: 1,
-        pagination: false,
-        onChanged: this.syncPosition
-      });
-
-      $(".sync2").owlCarousel({
-        items: 5,
-        pagination: false,
-        onInitialized: function(el) {
-          $(el.target)
-            .find(".owl-item")
-            .eq(0)
-            .addClass("synced");
-        }
-      });
-      $(".sync2").on("click", ".owl-item", function(e) {
-        const to = $(this).index();
-        e.preventDefault();
-        $(".sync1").trigger("to.owl.carousel", to);
-      });
+	import {mapGetters} from 'vuex';
+	export default {
+		name: "ImagesView",
+    props: {
     },
-    syncPosition(el) {
-      const current = el.item.index;
-      $(".sync2")
-        .find(".owl-item")
-        .removeClass("synced")
-        .eq(current)
-        .addClass("synced");
-    }
-  }
-};
+		data() {
+			return {
+			}
+		},
+		computed: mapGetters(['currentBook']),
+		methods: {
+			getImgUrl(i) {
+				return this.currentBook.images[i].url;
+			}
+		},
+	};
 </script>
 
-<style>
+<style scoped>
+	/* For demo */
+	.ant-carousel >>> .slick-dots {
+		height: auto;
+	}
+
+	.ant-carousel >>> .slick-slide img {
+		border: 5px solid #fff;
+		display: block;
+		margin: auto;
+		max-width: 80%;
+	}
+
+	.ant-carousel >>> .slick-thumb {
+		bottom: -45px;
+	}
+
+	.ant-carousel >>> .slick-thumb li {
+		width: 60px;
+		height: 45px;
+	}
+
+	.ant-carousel >>> .slick-thumb li img {
+		width: 100%;
+		height: 100%;
+		filter: grayscale(100%);
+	}
+
+	.ant-carousel >>> .slick-thumb li.slick-active img {
+		filter: grayscale(0%);
+	}
 </style>

@@ -24,7 +24,11 @@ import ProductOverview from "@/components/user/ProductOverview";
 import ProductListCarousel from "@/components/user/ProductListCarousel";
 export default {
   name: "ProductDetail",
-  components: { ImagesView, ProductDetailArea, ProductOverview, ProductListCarousel }
+  components: { ImagesView, ProductDetailArea, ProductOverview, ProductListCarousel },
+  data() {
+    return{
+    }
+  }
 };
 </script>
 

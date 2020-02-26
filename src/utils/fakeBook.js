@@ -9,7 +9,8 @@ export const generateBook = () => {
   const res = {
     id,
     short_name: name,
-    description: faker.lorem.paragraphs(),
+    description: faker.lorem.paragraphs(20),
+    short_description: faker.lorem.paragraphs(),
     status: ["Còn hàng", "Sắp bán", "Hết hàng", "Ngừng bán"][faker.random.number() % 2],
     name,
     url: slugify(name),

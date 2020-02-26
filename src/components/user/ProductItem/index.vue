@@ -1,5 +1,5 @@
 <template>
-  <div class="item-inner">
+  <div class="item-inner" v-if="item" @click.prevent="handleGetCurrentBook">
     <div class="stl_full_width">
       <div class="laster-thumb">
         <div class="b-prices-reduc">
@@ -61,6 +61,7 @@
 <script>
 import { numberWithDots, shortText } from "@/utils/display";
 import cart from "@/mixins/cart";
+import {mapActions} from "vuex";
 
 export default {
   name: "ProductItem",
@@ -83,6 +84,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      setCurrentBook: "app/setCurrentBook"
+    }),
     addOneToCart(product) {
       this.addToCart(product, 1);
       this.setModalCart(true);
@@ -90,6 +94,9 @@ export default {
     buyNow(product) {
       this.addToCart(product, 1);
       this.$router.push({ path: "/gio-hang" });
+    },
+    handleGetCurrentBook(){
+      this.setCurrentBook(this.item);
     }
   }
 };

@@ -22,8 +22,9 @@ import Promotions from "../Promotions";
 import SocialMedia from "../SocialMedia";
 import AddToCart from "../AddToCart";
 import ProductInfoSimple from "../ProductInfoSimple";
+
 export default {
-  components: { Promotions, SocialMedia, AddToCart, ProductInfoSimple }
+  components: { Promotions, SocialMedia, AddToCart, ProductInfoSimple },
 };
 </script>
 

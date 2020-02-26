@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+// import {generateBook} from "../../utils/fakeBook";
 
 const state = {
   isMobile: false,
@@ -13,7 +14,8 @@ const state = {
   ],
   multipage: true,
   loading: false,
-  collapsed: Cookies.get("sidebarStatus") === "1"
+  collapsed: Cookies.get("sidebarStatus") === "1",
+  currentBook: null
 };
 
 const mutations = {
@@ -46,6 +48,9 @@ const mutations = {
   },
   SET_LOADING: (state, newLoading) => {
     state.loading = newLoading;
+  },
+  SET_CURRENT_BOOK: (state, book) => {
+    state.currentBook = book;
   }
 };
 
@@ -67,6 +72,9 @@ const actions = {
   },
   setCollapsed({ commit }, collapsed) {
     commit("TOGGLE_SIDEBAR", collapsed);
+  },
+  setCurrentBook({commit}, book){
+    commit("SET_CURRENT_BOOK", book);
   }
 };
 

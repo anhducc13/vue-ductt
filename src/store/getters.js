@@ -17,5 +17,6 @@ const getters = {
   extraData: state => state.extra.extraData,
   loading: state => state.app.loading,
   collapsed: state => state.app.collapsed,
+  currentBook: state => state.app.currentBook,
 };
 export default getters;
