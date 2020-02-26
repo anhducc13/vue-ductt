@@ -1,14 +1,14 @@
 <template>
   <div >
-    <div :class="['mask', openDrawer ? 'open' : 'close']" @click="close"></div>
-    <div :class="['drawer', placement, openDrawer ? 'open' : 'close']">
+    <div :class="['mask', collapsed ? 'open' : 'close']" @click="close"></div>
+    <div :class="['drawer', placement, collapsed ? 'open' : 'close']">
       <div ref="drawer" style="position: relative; height: 100%;">
         <slot></slot>
       </div>
       <div v-if="showHandler" :class="['handler-container', placement]" ref="handler" @click="handle">
         <slot v-if="$slots.handler" name="handler"></slot>
         <div v-else class="handler">
-          <a-icon :type="openDrawer ? 'close'  : 'bars'" />
+          <a-icon :type="collapsed ? 'close'  : 'bars'" />
         </div>
       </div>
     </div>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: 'Drawer',
   data () {
@@ -24,11 +25,6 @@ export default {
     }
   },
   props: {
-    openDrawer: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
     placement: {
       type: String,
       required: false,
@@ -52,15 +48,23 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      "collapsed"
+    ])
+  },
   methods: {
+    ...mapActions({
+      setCollapsed: "app/setCollapsed"
+    }),
     open () {
-      this.$emit('change', true)
+      this.setCollapsed(true);
     },
     close () {
-      this.$emit('change', false)
+      this.setCollapsed(false);
     },
     handle () {
-      this.$emit('change', !this.openDrawer)
+      this.setCollapsed(!this.collapsed);
     },
     getDrawerWidth () {
       return this.$refs.drawer.clientWidth

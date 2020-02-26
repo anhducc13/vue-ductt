@@ -23,10 +23,22 @@ export default {
         city_id: undefined,
         district_id: undefined,
         ward_id: undefined,
-        address: "",
-        note: ""
+        address: ""
       },
-      openModalReceivedInfo: false
+      
+      openModalReceivedInfo: false,
+      pseudoReceiverInfo: {
+        cities: [],
+        districts: [],
+        wards: [],
+        email: "",
+        name: "",
+        phoneNumber: "",
+        city_id: undefined,
+        district_id: undefined,
+        ward_id: undefined,
+        address: ""
+      }
     };
   },
   computed: {
@@ -39,18 +51,19 @@ export default {
     async fetchAllCities() {
       const { results } = await fetchCities();
       this.pseudoBuyerInfo.cities = results;
+      this.pseudoReceiverInfo.cities = results;
     },
-    async fetchAllDistricts() {
+    async fetchAllDistricts(src) {
       const { results } = await fetchDistricts({
-        city_id: this.pseudoBuyerInfo.city_id
+        city_id: this[src].city_id.key
       });
-      this.pseudoBuyerInfo.districts = results;
+      this[src].districts = results;
     },
-    async fetchAllWards() {
+    async fetchAllWards(src) {
       const { results } = await fetchWards({
-        district_id: this.pseudoBuyerInfo.district_id
+        district_id: this[src].district_id.key
       });
-      this.pseudoBuyerInfo.wards = results;
+      this[src].wards = results;
     },
     async handleFetchFirstTime() {
       this.listProductSearch = [];
@@ -94,7 +107,7 @@ export default {
     "pseudoBuyerInfo.city_id": {
       async handler(newData) {
         if (newData) {
-          await this.fetchAllDistricts();
+          await this.fetchAllDistricts("pseudoBuyerInfo");
         }
       },
       deep: true
@@ -102,7 +115,23 @@ export default {
     "pseudoBuyerInfo.district_id": {
       async handler(newData) {
         if (newData) {
-          await this.fetchAllWards();
+          await this.fetchAllWards("pseudoBuyerInfo");
+        }
+      },
+      deep: true
+    },
+    "pseudoReceiverInfo.city_id": {
+      async handler(newData) {
+        if (newData) {
+          await this.fetchAllDistricts("pseudoReceiverInfo");
+        }
+      },
+      deep: true
+    },
+    "pseudoReceiverInfo.district_id": {
+      async handler(newData) {
+        if (newData) {
+          await this.fetchAllWards("pseudoReceiverInfo");
         }
       },
       deep: true

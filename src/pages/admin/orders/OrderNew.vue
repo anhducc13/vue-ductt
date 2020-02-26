@@ -64,7 +64,11 @@
                 <span slot="actions" style="cursor: text">
                   {{item.sale_price}}
                   <u>đ</u> &nbsp;x&nbsp;
-                  <a-input-number :min="1" v-model="item.buyNumber" :max="item.quantity_in_stock" />
+                  <a-input-number
+                    :min="1"
+                    v-model="item.buyNumber"
+                    :max="item.quantity_in_stock"
+                  />
                 </span>
                 <span slot="actions" style="cursor: text">
                   {{multi(item.buyNumber, item.sale_price)}}
@@ -126,7 +130,10 @@
               <a-col class="my-1" :span="12">SĐT</a-col>
               <a-col class="my-1" :span="12">{{buyerInfo.phoneNumber}}</a-col>
               <a-col class="my-1" :span="12">Địa chỉ</a-col>
-              <a-col class="my-1" :span="12">a</a-col>
+              <a-col class="my-1" :span="12">
+                <div>{{address("buyerInfo")}}</div>
+                <div>{{buyerInfo.address}}</div>
+              </a-col>
             </div>
             <div class="my-2" v-else>Không có thông tin</div>
             <a-checkbox class="mt-2" v-model="isOtherReceived">Nhận hàng địa chỉ khác</a-checkbox>
@@ -145,8 +152,8 @@
               :maskClosable="false"
               @ok="handleSubmit(handleSaveBuyerInfo)"
             >
-              <a-form layout="vertical" :style="{ textAlign: 'center'}">
-                <validation-provider rules="email" v-slot="{ errors }">
+              <a-form layout="vertical" :style="{ textAlign: 'left'}">
+                <validation-provider name="Email" rules="required|email" v-slot="{ errors }">
                   <a-form-item
                     label="Email"
                     :help="errors[0]"
@@ -179,12 +186,14 @@
                     name="Họ tên"
                     :help="errors[0]"
                     :validate-status="errors[0] ? 'error': ''"
+                    labelInValue
                   >
                     <a-select
                       v-model="pseudoBuyerInfo.city_id"
                       showSearch
                       placeholder="Chọn Tỉnh / Thành phố"
                       optionFilterProp="children"
+                      labelInValue
                     >
                       <a-select-option
                         v-for="item in pseudoBuyerInfo.cities"
@@ -200,7 +209,11 @@
                     :help="errors[0]"
                     :validate-status="errors[0] ? 'error': ''"
                   >
-                    <a-select placeholder="Chọn Quận / Huyện" v-model="pseudoBuyerInfo.district_id">
+                    <a-select
+                      placeholder="Chọn Quận / Huyện"
+                      v-model="pseudoBuyerInfo.district_id"
+                      labelInValue
+                    >
                       <a-select-option
                         v-for="item in pseudoBuyerInfo.districts"
                         :key="item.id"
@@ -215,7 +228,11 @@
                     :help="errors[0]"
                     :validate-status="errors[0] ? 'error': ''"
                   >
-                    <a-select placeholder="Chọn phường / xã" v-model="pseudoBuyerInfo.ward_id">
+                    <a-select
+                      placeholder="Chọn phường / xã"
+                      v-model="pseudoBuyerInfo.ward_id"
+                      labelInValue
+                    >
                       <a-select-option
                         v-for="item in pseudoBuyerInfo.wards"
                         :key="item.id"
@@ -235,16 +252,135 @@
           <a-card class="mb-3" :title="null" size="small">
             <div class="d-flex justify-content-between">
               <h5>Thông tin nhận hàng</h5>
-              <a-button type="link">Thêm</a-button>
+              <a-button
+                type="link"
+                @click.prevent="openModalReceivedInfo = true"
+              >{{buyerInfo ? "Sửa" : "Thêm"}}</a-button>
             </div>
-            <p>Không có thông tin</p>
+            <div class="my-2" style="font-weight: bold" v-if="receiverInfo">
+              <a-col class="my-1" :span="12">Email</a-col>
+              <a-col class="my-1" :span="12">{{receiverInfo.email}}</a-col>
+              <a-col class="my-1" :span="12">Họ tên</a-col>
+              <a-col class="my-1" :span="12">{{receiverInfo.name}}</a-col>
+              <a-col class="my-1" :span="12">SĐT</a-col>
+              <a-col class="my-1" :span="12">{{receiverInfo.phoneNumber}}</a-col>
+              <a-col class="my-1" :span="12">Địa chỉ</a-col>
+              <a-col class="my-1" :span="12">
+                <div>{{address("receiverInfo")}}</div>
+                <div>{{receiverInfo.address}}</div>
+              </a-col>
+            </div>
+            <div class="my-2" v-else>Không có thông tin</div>
+            <a-button
+              class="float-right"
+              v-if="receiverInfo"
+              type="link"
+              @click.prevent="handleDeleteReceiverInfo"
+            >Xóa</a-button>
           </a-card>
-          <a-modal
-            title="Thông tin người nhận hàng"
-            v-model="openModalReceivedInfo"
-            :okButtonProps="{ props: {disabled: true}}"
-            :maskClosable="false"
-          >abc</a-modal>
+          <validation-observer v-slot="{ handleSubmit, invalid }">
+            <a-modal
+              title="Thông tin người nhận hàng"
+              v-model="openModalReceivedInfo"
+              :okButtonProps="{ props: {disabled: invalid}}"
+              :maskClosable="false"
+              @ok="handleSubmit(handleSaveReceiverInfo)"
+            >
+              <a-form layout="vertical" :style="{ textAlign: 'left'}">
+                <validation-provider name="Email" rules="required|email" v-slot="{ errors }">
+                  <a-form-item
+                    label="Email"
+                    :help="errors[0]"
+                    :validate-status="errors[0] ? 'error': ''"
+                  >
+                    <a-input placeholder="Nhập email" v-model="pseudoReceiverInfo.email" />
+                  </a-form-item>
+                </validation-provider>
+                <validation-provider name="Họ tên" rules="required" v-slot="{ errors }">
+                  <a-form-item
+                    label="Họ và tên"
+                    :help="errors[0]"
+                    :validate-status="errors[0] ? 'error': ''"
+                  >
+                    <a-input placeholder="Nhập họ và tên" v-model="pseudoReceiverInfo.name" />
+                  </a-form-item>
+                </validation-provider>
+                <validation-provider name="SĐT" rules="required|phoneNumber" v-slot="{ errors }">
+                  <a-form-item
+                    label="Số điện thoại"
+                    :help="errors[0]"
+                    :validate-status="errors[0] ? 'error': ''"
+                  >
+                    <a-input placeholder="Nhập SĐT" v-model="pseudoReceiverInfo.phoneNumber" />
+                  </a-form-item>
+                </validation-provider>
+                <validation-provider name="Tỉnh / Thành phố" rules v-slot="{ errors }">
+                  <a-form-item
+                    label="Tỉnh / Thành phố"
+                    name="Họ tên"
+                    :help="errors[0]"
+                    :validate-status="errors[0] ? 'error': ''"
+                    labelInValue
+                  >
+                    <a-select
+                      v-model="pseudoReceiverInfo.city_id"
+                      showSearch
+                      placeholder="Chọn Tỉnh / Thành phố"
+                      optionFilterProp="children"
+                      labelInValue
+                    >
+                      <a-select-option
+                        v-for="item in pseudoReceiverInfo.cities"
+                        :key="item.id"
+                        :value="item.id"
+                      >{{item.name}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </validation-provider>
+                <validation-provider name="Quận / Huyện" rules v-slot="{ errors }">
+                  <a-form-item
+                    label="Quận / Huyện"
+                    :help="errors[0]"
+                    :validate-status="errors[0] ? 'error': ''"
+                  >
+                    <a-select
+                      placeholder="Chọn Quận / Huyện"
+                      v-model="pseudoReceiverInfo.district_id"
+                      labelInValue
+                    >
+                      <a-select-option
+                        v-for="item in pseudoReceiverInfo.districts"
+                        :key="item.id"
+                        :value="item.id"
+                      >{{item.name}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </validation-provider>
+                <validation-provider name="Phường / Xã" rules v-slot="{ errors }">
+                  <a-form-item
+                    label="Phường / Xã"
+                    :help="errors[0]"
+                    :validate-status="errors[0] ? 'error': ''"
+                  >
+                    <a-select
+                      placeholder="Chọn phường / xã"
+                      v-model="pseudoReceiverInfo.ward_id"
+                      labelInValue
+                    >
+                      <a-select-option
+                        v-for="item in pseudoReceiverInfo.wards"
+                        :key="item.id"
+                        :value="item.id"
+                      >{{item.name}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </validation-provider>
+                <a-form-item label="Địa chỉ chi tiết">
+                  <a-input placeholder="Nhập địa chỉ" v-model="pseudoReceiverInfo.address" />
+                </a-form-item>
+              </a-form>
+            </a-modal>
+          </validation-observer>
         </a-col>
       </a-col>
     </a-row>
@@ -258,6 +394,7 @@ export default {
   data() {
     return {
       buyerInfo: null,
+      receiverInfo: null,
       productsInOrder: [],
       isOtherReceived: false
     };
@@ -276,6 +413,14 @@ export default {
         (prev, curr) => parseInt(prev + curr.buyNumber * curr.sale_price),
         0
       );
+    },
+    address() {
+      return src => {
+        const city = this[src].city_id.label;
+        const district = this[src].district_id.label;
+        const ward = this[src].ward_id.label;
+        return `${ward} - ${district} - ${city}`;
+      };
     }
   },
   methods: {
@@ -298,9 +443,10 @@ export default {
     },
     removeItemInOrder(id) {
       this.productsInOrder = this.productsInOrder.filter(x => x.id !== id);
+      this.pickedItem = this.pickedItem.filter(x => x.id !== id);
     },
     handleSaveBuyerInfo() {
-      this.buyerInfo = this.pseudoBuyerInfo;
+      this.buyerInfo = { ...this.pseudoBuyerInfo };
       this.openModalBuyerInfo = false;
     },
     handleDeleteBuyerInfo() {
@@ -315,11 +461,29 @@ export default {
         city_id: undefined,
         district_id: undefined,
         ward_id: undefined,
-        address: "",
-        note: ""
+        address: ""
       };
-    }
-  }
+    },
+    handleSaveReceiverInfo() {
+      this.receiverInfo = { ...this.pseudoReceiverInfo };
+      this.openModalReceivedInfo = false;
+    },
+    handleDeleteReceiverInfo() {
+      this.receiverInfo = null;
+      this.pseudoReceiverInfo = {
+        cities: [],
+        districts: [],
+        wards: [],
+        email: "",
+        name: "",
+        phoneNumber: "",
+        city_id: undefined,
+        district_id: undefined,
+        ward_id: undefined,
+        address: ""
+      };
+    },
+  },
 };
 </script>
 

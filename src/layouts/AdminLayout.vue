@@ -1,6 +1,6 @@
 <template>
   <a-layout class="layout-container">
-    <drawer v-if="isMobile" :openDrawer="collapsed" @change="onDrawerChange">
+    <drawer v-if="isMobile">
       <sider-menu
         :theme="theme"
         :menuData="menuData"
@@ -21,15 +21,15 @@
           <slot></slot>
         </a-spin>
       </a-layout-content>
-      <a-layout-footer style="padding: 0px">
+      <!-- <a-layout-footer style="padding: 0px">
         <global-footer :link-list="footerLinks" :copyright="copyright" />
-      </a-layout-footer>
+      </a-layout-footer> -->
     </a-layout>
   </a-layout>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import GlobalHeader from "./Admin/components/GlobalHeader";
 import Drawer from "@/components/shared/tool/Drawer";
 import SiderMenu from "@/components/shared/menu/SiderMenu";
@@ -62,8 +62,11 @@ export default {
     ])
   },
   methods: {
+    ...mapActions({
+      setCollapsed: "app/setCollapsed"
+    }),
     onDrawerChange(show) {
-      this.collapsed = show;
+      this.setCollapsed(show);
     },
     onMenuSelect() {
       this.toggleCollapse();
