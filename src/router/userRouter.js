@@ -25,6 +25,10 @@ export default [
     component: () => import("@/pages/user/ProductDetail")
   },
   {
+    path: "/san-pham/:slug/preview",
+    component: () => import("@/components/user/ProductPreview")
+  },
+  {
     path: "/gio-hang",
     meta: { layout: "default", title: "Giỏ hàng" },
     component: () => import("@/pages/user/Cart")
